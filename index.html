@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Notes & Cmds de travail</title>
+  <style>
+    body { font-family: sans-serif; margin: 10px 20px; }
+    h1 { font-size: 1.4rem; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+    label { font-size: 0.9rem; }
+    input, select, textarea { font-size: 0.9rem; }
+    textarea { width: 100%; height: 80px; }
+    .notes-list { max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 5px; }
+    .note-item { border-bottom: 1px solid #eee; padding: 4px 0; }
+    .tag { font-size: 0.75rem; background: #eef; padding: 1px 4px; border-radius: 3px; margin-right: 4px; }
+    .type-note { background: #d1ffd1; }
+    .type-cmd { background: #ffe1b3; }
+    button { cursor: pointer; }
+    pre { margin: 3px 0 0 0; font-size:0.9rem; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Notes & commandes de travail</h1>
+
+  <div class="row">
+    <div>
+      <label>Date</label><br>
+      <input type="date" id="dateInput">
+    </div>
+    <div>
+      <label>Type</label><br>
+      <select id="typeInput">
+        <option value="note">Note journalière</option>
+        <option value="cmd">Commande / snippet</option>
+      </select>
+    </div>
+    <div>
+      <label>Framework</label><br>
+      <input type="text" id="frameworkInput" placeholder="ex: React, Symfony, Spring">
+    </div>
+    <div>
+      <label>Environnement</label><br>
+      <input type="text" id="envInput" placeholder="ex: Linux, Windows, Docker">
+    </div>
+  </div>
+
+  <div>
+    <label>Contenu</label><br>
+    <textarea id="contentInput" placeholder="Ta note ou ta commande ici..."></textarea>
+  </div>
+
+  <div style="margin-top: 5px;">
+    <button id="saveBtn">Enregistrer</button>
+    <button id="exportBtn">Exporter JSON</button>
+    <input type="file" id="importFile" style="display:none;">
+    <button id="importBtn">Importer JSON</button>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div>
+      <label>Filtre texte</label><br>
+      <input type="text" id="searchInput" placeholder="Recherche dans le contenu...">
+    </div>
+    <div>
+      <label>Filtre framework</label><br>
+      <input type="text" id="filterFramework" placeholder="ex: React">
+    </div>
+    <div>
+      <label>Filtre env</label><br>
+      <input type="text" id="filterEnv" placeholder="ex: Linux">
+    </div>
+    <div>
+      <label>Filtre type</label><br>
+      <select id="filterType">
+        <option value="">Tous</option>
+        <option value="note">Notes</option>
+        <option value="cmd">Cmds</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="notes-list" id="notesList"></div>
+
+  <!-- JS compilé depuis TypeScript -->
+  <script src="main.js"></script>
+</body>
+</html>
