@@ -1,4 +1,4 @@
-// ====== Utilitaires généraux ======
+// ====== Utilitaires ======
 function $(id) {
   const el = document.getElementById(id);
   if (!el) throw new Error("Element #" + id + " introuvable");
@@ -27,10 +27,10 @@ function fallbackCopy(text) {
   document.body.removeChild(textarea);
 }
 
-// ====== Données commandes (chargées depuis commands.json) ======
+// ====== Données ======
 let COMMANDS = [];
 
-// ====== Recherche & affichage commandes ======
+// ====== Filtres & affichage ======
 function populateFrameworkFilter() {
   const select = $("frameworkFilter");
   const frameworks = new Set();
@@ -89,7 +89,7 @@ function renderCommands() {
 
   if (!filtered.length) {
     list.innerHTML =
-      '<div class="empty-state">Aucune commande pour ces critères. Ajoute-en dans <code>commands.json</code> si besoin.</div>';
+      '<div class="empty-state">Aucune commande pour ces critères. Vérifie aussi que <code>commands.json</code> est bien chargé.</div>';
   } else {
     filtered.forEach((c) => {
       const item = document.createElement("div");
@@ -176,15 +176,28 @@ function renderCommands() {
 }
 
 function initSearch() {
-  ["searchInput", "frameworkFilter"].forEach((id) => {
-    $(id).addEventListener("input", renderCommands);
-  });
+  // Recherche au clavier
+  $("searchInput").addEventListener("input", renderCommands);
+  $("frameworkFilter").addEventListener("input", renderCommands);
   document
     .querySelectorAll("input[name='osFilter']")
     .forEach((r) => r.addEventListener("change", renderCommands));
+
+  // Enter dans la zone de recherche
+  $("searchInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      renderCommands();
+    }
+  });
+
+  // Bouton Rechercher
+  $("searchBtn").addEventListener("click", () => {
+    renderCommands();
+  });
 }
 
-// ====== Générateur JSON pour commands.json ======
+// ====== Générateur JSON ======
 function slugify(str) {
   return str
     .toLowerCase()
@@ -213,7 +226,7 @@ function generateJsonSnippet() {
   const example = $("genExample").value.trim();
   let id = $("genId").value.trim();
 
-  if (!label || !command || !framework) {
+  if (!framework || !label || !command) {
     alert("Framework, Label et Commande sont obligatoires.");
     return;
   }
@@ -258,23 +271,33 @@ function initGenerator() {
 
 // ====== Chargement initial ======
 window.addEventListener("DOMContentLoaded", () => {
-  fetch("commands.json", { cache: "no-store" })
+  // Important : cache-buster pour éviter d'anciennes versions
+  fetch("commands.json?ts=" + Date.now(), { cache: "no-store" })
     .then((res) => {
-      if (!res.ok) throw new Error("Impossible de charger commands.json");
+      if (!res.ok) {
+        throw new Error("HTTP " + res.status);
+      }
       return res.json();
     })
     .then((data) => {
-      if (!Array.isArray(data)) throw new Error("Format commands.json invalide");
+      if (!Array.isArray(data)) {
+        throw new Error("Format commands.json invalide (doit être un tableau).");
+      }
       COMMANDS = data;
+      console.log("Commands chargées:", COMMANDS.length);
       populateFrameworkFilter();
       initSearch();
       renderCommands();
     })
     .catch((err) => {
-      console.error(err);
+      console.error("Erreur chargement commands.json:", err);
+      alert(
+        "Erreur lors du chargement de commands.json.\n\nVérifie :\n- que commands.json est bien à la racine du repo\n- que le JSON est valide (pas de virgule en trop, pas de commentaires)\n- que tu ouvres la page via HTTP (GitHub Pages, pas file://)"
+      );
       $("commandsList").innerHTML =
-        '<div class="empty-state">Erreur lors du chargement de <code>commands.json</code>. Vérifie qu\'il existe dans le repo.</div>';
+        '<div class="empty-state">Erreur lors du chargement de <code>commands.json</code> (voir la console F12).</div>';
       $("commandsCount").textContent = "0 commande";
+      initSearch(); // pour que le bouton search ne casse pas l'app même sans données
     });
 
   initGenerator();
