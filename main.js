@@ -1,4 +1,4 @@
-// main.js (module ES)
+// main.js (extrait en haut du fichier)
 import { javaSpringCommands } from "./commands/java_spring.js";
 import { angularCommands } from "./commands/angular.js";
 import { dockerCommands } from "./commands/docker.js";
@@ -6,7 +6,20 @@ import { linuxCommands } from "./commands/linux.js";
 import { windowsCommands } from "./commands/windows.js";
 import { gitCommands } from "./commands/git.js";
 import { sqlCommands } from "./commands/sql.js";
+import { sqlAdvancedCommands } from "./commands/sql_advanced.js";
+import { nosqlCommands } from "./commands/nosql.js";
 
+const COMMANDS = [
+  ...javaSpringCommands,
+  ...angularCommands,
+  ...dockerCommands,
+  ...linuxCommands,
+  ...windowsCommands,
+  ...gitCommands,
+  ...sqlCommands,
+  ...sqlAdvancedCommands,
+  ...nosqlCommands
+];
 // ====== Utilitaires ======
 function $(id) {
   const el = document.getElementById(id);
