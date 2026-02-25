@@ -8,24 +8,28 @@
     :root {
       --bg: #020617;
       --bg-soft: #0b1220;
-      --accent: #3b82f6;
+      --accent: #6366f1;
       --accent2: #22c55e;
-      --border-subtle: rgba(148,163,184,0.35);
+      --accent3: #ec4899;
+      --border-subtle: rgba(148,163,184,0.45);
       --text: #e5e7eb;
       --text-muted: #9ca3af;
       --radius-lg: 18px;
       --radius-md: 10px;
-      --shadow-soft: 0 20px 55px rgba(15,23,42,0.9);
-      --transition-fast: 0.15s ease-out;
+      --shadow-soft: 0 24px 60px rgba(15,23,42,0.9);
+      --transition-fast: 0.18s ease-out;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
       padding: 24px;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #1d283a 0, #020617 40%, #000 100%);
+      background:
+        radial-gradient(circle at top left, #1d283a 0, #020617 40%, #000 100%);
       color: var(--text);
       min-height: 100vh;
       display: flex;
@@ -34,13 +38,13 @@
 
     .app-shell {
       width: 100%;
-      max-width: 1120px;
-      background: linear-gradient(145deg, rgba(15,23,42,0.98), rgba(15,23,42,0.96));
+      max-width: 1150px;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(15,23,42,0.96));
       border-radius: 24px;
-      border: 1px solid var(--border-subtle);
+      border: 1px solid rgba(148,163,184,0.55);
       box-shadow: var(--shadow-soft);
       padding: 20px 20px 22px;
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(18px);
     }
 
     .app-header {
@@ -58,7 +62,7 @@
     }
 
     .title {
-      font-size: 1.3rem;
+      font-size: 1.35rem;
       font-weight: 600;
       letter-spacing: 0.02em;
       display: flex;
@@ -70,8 +74,9 @@
       border-radius: 999px;
       padding: 3px 9px;
       font-size: 0.7rem;
-      border: 1px solid rgba(148,163,184,0.45);
+      border: 1px solid rgba(148,163,184,0.55);
       color: var(--text-muted);
+      background: rgba(15,23,42,0.9);
     }
 
     .subtitle {
@@ -86,11 +91,11 @@
     }
 
     .card {
-      background: radial-gradient(circle at top left, var(--bg-soft), #020617);
+      background: radial-gradient(circle at top left, #020617, #020617 55%, #000 100%);
       border-radius: var(--radius-lg);
       border: 1px solid var(--border-subtle);
       padding: 14px 14px 12px;
-      box-shadow: 0 12px 32px rgba(15,23,42,0.85);
+      box-shadow: 0 16px 40px rgba(15,23,42,0.85);
     }
 
     .card-header {
@@ -105,7 +110,7 @@
       font-weight: 600;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: #a5b4fc;
     }
 
     .card-subtitle {
@@ -119,6 +124,7 @@
       font-size: 0.7rem;
       border: 1px solid rgba(148,163,184,0.55);
       color: var(--text-muted);
+      background: rgba(15,23,42,0.9);
     }
 
     .grid { display: grid; gap: 10px; }
@@ -153,7 +159,7 @@
 
     input:focus, select:focus, textarea:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(37,99,235,0.6);
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.7);
       background: radial-gradient(circle at top left, rgba(15,23,42,1), rgba(15,23,42,0.96));
     }
 
@@ -176,17 +182,22 @@
     .btn-primary {
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       color: white;
-      box-shadow: 0 10px 28px rgba(37,99,235,0.7);
+      box-shadow: 0 12px 32px rgba(99,102,241,0.7);
     }
 
     .btn-secondary {
       background: rgba(15,23,42,0.96);
       color: var(--text-muted);
-      border: 1px solid rgba(148,163,184,0.45);
+      border: 1px solid rgba(148,163,184,0.55);
     }
 
-    .btn:hover { transform: translateY(-0.5px); filter: brightness(1.03); }
-    .btn-primary:hover { box-shadow: 0 14px 40px rgba(37,99,235,0.85); }
+    .btn:hover {
+      transform: translateY(-0.5px);
+      filter: brightness(1.04);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 18px 45px rgba(129,140,248,0.9);
+    }
 
     .btn-icon { font-size: 0.9rem; }
     .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
@@ -230,20 +241,29 @@
     }
 
     .commands-list {
-      max-height: 320px;
+      max-height: 360px;
       overflow-y: auto;
       border-radius: var(--radius-md);
-      border: 1px solid rgba(30,64,175,0.7);
-      background: radial-gradient(circle at top, #020617, #020617);
+      border: 1px solid rgba(59,130,246,0.7);
+      background: radial-gradient(circle at top, #020617, #020617 70%, #000 100%);
       padding: 6px;
     }
 
     .command-item {
-      border-radius: 11px;
+      border-radius: 12px;
       padding: 8px 9px 7px;
       background: linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,0.94));
-      border: 1px solid rgba(30,64,175,0.65);
-      margin-bottom: 6px;
+      border: 1px solid rgba(59,130,246,0.5);
+      margin-bottom: 7px;
+      cursor: pointer;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast), background var(--transition-fast);
+    }
+
+    .command-item:hover {
+      border-color: rgba(129,140,248,0.95);
+      box-shadow: 0 12px 30px rgba(15,23,42,0.85);
+      transform: translateY(-1px);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.99), rgba(15,23,42,0.94));
     }
 
     .command-meta {
@@ -260,7 +280,19 @@
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.55);
       color: var(--text-muted);
-      background: rgba(15,23,42,0.96);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(15,23,42,0.9));
+    }
+
+    .tag-framework {
+      border-color: rgba(96,165,250,0.8);
+      color: #bfdbfe;
+      background: linear-gradient(135deg, rgba(37,99,235,0.3), rgba(30,64,175,0.7));
+    }
+
+    .tag-category {
+      border-color: rgba(244,114,182,0.8);
+      color: #f9a8d4;
+      background: linear-gradient(135deg, rgba(190,24,93,0.25), rgba(131,24,67,0.7));
     }
 
     .tag-os-linux {
@@ -270,15 +302,16 @@
     }
 
     .tag-os-windows {
-      border-color: rgba(59,130,246,0.9);
+      border-color: rgba(96,165,250,0.9);
       color: #bfdbfe;
-      background: rgba(30,64,175,0.6);
+      background: rgba(30,64,175,0.7);
     }
 
     .command-label {
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       font-weight: 500;
       margin-bottom: 4px;
+      color: #e5e7eb;
     }
 
     .command-command {
@@ -287,7 +320,7 @@
       line-height: 1.35;
       background: rgba(15,23,42,0.97);
       border-radius: 8px;
-      border: 1px solid rgba(30,64,175,0.75);
+      border: 1px solid rgba(30,64,175,0.8);
       padding: 6px 8px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       display: flex;
@@ -296,7 +329,9 @@
       gap: 8px;
     }
 
-    .command-text { overflow-wrap: anywhere; }
+    .command-text {
+      overflow-wrap: anywhere;
+    }
 
     .command-description {
       font-size: 0.76rem;
@@ -316,7 +351,7 @@
       padding: 4px 7px;
       font-size: 0.75rem;
       cursor: pointer;
-      background: rgba(30,64,175,0.95);
+      background: linear-gradient(135deg, rgba(37,99,235,0.95), rgba(59,130,246,0.95));
       color: #e5e7eb;
       display: inline-flex;
       align-items: center;
@@ -326,7 +361,7 @@
     }
 
     .copy-btn:hover {
-      background: rgba(59,130,246,1);
+      background: linear-gradient(135deg, rgba(129,140,248,1), rgba(56,189,248,1));
       transform: translateY(-0.5px);
     }
 
@@ -360,11 +395,108 @@
       min-height: 90px;
       background: rgba(15,23,42,0.97);
       border-radius: var(--radius-md);
-      border: 1px solid rgba(30,64,175,0.75);
+      border: 1px solid rgba(30,64,175,0.8);
       padding: 6px 8px;
       color: #e5e7eb;
       white-space: pre;
       overflow-x: auto;
+    }
+
+    /* === Modale (zoom commande) === */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.75);
+      backdrop-filter: blur(6px);
+      z-index: 40;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    .modal-inner {
+      pointer-events: auto;
+      width: min(640px, 95vw);
+      max-height: 90vh;
+      background: radial-gradient(circle at top left, #020617, #020617 65%, #000 100%);
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,0.7);
+      box-shadow: 0 26px 70px rgba(15,23,42,0.98);
+      padding: 16px 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .modal-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .modal-close {
+      border: none;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px 6px;
+      font-size: 1rem;
+    }
+
+    .modal-close:hover {
+      background: rgba(15,23,42,0.9);
+      color: #f87171;
+    }
+
+    .modal-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .modal-command-block {
+      background: rgba(15,23,42,0.97);
+      border-radius: 10px;
+      border: 1px solid rgba(59,130,246,0.8);
+      padding: 8px 9px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      line-height: 1.35;
+      position: relative;
+    }
+
+    .modal-command-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 6px;
+    }
+
+    .modal-body-scroll {
+      overflow-y: auto;
+      max-height: 60vh;
+      padding-right: 2px;
+    }
+
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
@@ -377,7 +509,7 @@
           <span class="pill">Recherche + Générateur d'entrée commands.json</span>
         </div>
         <div class="subtitle">
-          Recherche plein texte (Java, Angular, Docker, Linux, Windows, Git, SQL) + génération d'objets JSON prêts à coller dans <code>commands.json</code>.
+          Recherche plein texte (tous domaines : Java, Angular, Docker, Linux, Cloud, SQL, etc.) + génération d'objets JSON prêts à coller dans <code>commands/*.js</code>.
         </div>
       </div>
     </header>
@@ -389,10 +521,10 @@
           <div>
             <div class="card-title">Recherche de commandes</div>
             <div class="card-subtitle">
-              Tape un mot-clé (ex: <code>logs</code>, <code>docker</code>, <code>spring</code>, <code>index</code>) + filtre Domaine et OS, puis clique sur Rechercher (ou tape au clavier, c'est live).
+              Tape un mot-clé (ex: <code>logs</code>, <code>docker</code>, <code>spring</code>, <code>aws</code>) + filtre Domaine et OS, puis clique sur Rechercher (ou tape au clavier).
             </div>
           </div>
-          <span class="badge">Source : commands.json (GitHub)</span>
+          <span class="badge">Source : modules commands/*.js (importés dans main.js)</span>
         </div>
 
         <div class="search-row">
@@ -425,13 +557,13 @@
 
         <div class="commands-list" id="commandsList">
           <div class="empty-state">
-            Chargement des commandes depuis <code>commands.json</code>...
+            Chargement des commandes depuis les fichiers <code>commands/*.js</code>...
           </div>
         </div>
 
         <div class="status-bar">
           <div class="status-pill" id="commandsCount"></div>
-          <div>Pour enrichir la base : ajoute des entrées dans <code>commands.json</code> puis <code>git commit &amp; push</code>.</div>
+          <div>Pour enrichir la base : ajoute des entrées dans les fichiers <code>commands/*.js</code> puis <code>git commit &amp; push</code>.</div>
         </div>
       </section>
 
@@ -441,7 +573,7 @@
           <div>
             <div class="card-title">Générateur d'entrée commands.json</div>
             <div class="card-subtitle">
-              Renseigne les champs → clique sur « Générer JSON » → copie le snippet et colle-le dans le tableau <code>commands.json</code>.
+              Renseigne les champs → clique sur « Générer JSON » → copie le snippet et colle-le dans un fichier <code>commands/xxx.js</code>.
             </div>
           </div>
           <span class="badge">Output JSON + bouton Copier</span>
@@ -451,7 +583,7 @@
           <div class="grid">
             <div>
               <label for="genFramework">Domaine / Framework</label>
-              <input type="text" id="genFramework" placeholder="ex: Java / Spring Boot, Docker, Git, SQL..." />
+              <input type="text" id="genFramework" placeholder="ex: Java / Spring Boot, Docker, Git, SQL, AWS..." />
             </div>
             <div>
               <label for="genEnv">Type d'environnement</label>
@@ -459,6 +591,8 @@
                 <option value="CLI">CLI</option>
                 <option value="DB">DB</option>
                 <option value="HTTP">HTTP</option>
+                <option value="code">code</option>
+                <option value="note">note</option>
               </select>
             </div>
             <div>
@@ -471,23 +605,23 @@
             </div>
             <div>
               <label for="genCategory">Catégorie</label>
-              <input type="text" id="genCategory" placeholder="ex: build, run, debug, logs, sql, git..." />
+              <input type="text" id="genCategory" placeholder="ex: build, run, logs, ml, eks, aks, iam..." />
             </div>
             <div>
               <label for="genLabel">Label (titre lisible)</label>
               <input type="text" id="genLabel" placeholder="ex: Lancer l'app Spring Boot en local" />
             </div>
             <div>
-              <label for="genCommand">Commande exacte</label>
-              <textarea id="genCommand" placeholder="ex: mvn spring-boot:run"></textarea>
+              <label for="genCommand">Commande exacte / snippet</label>
+              <textarea id="genCommand" placeholder="ex: mvn spring-boot:run ou code Python, SQL, etc."></textarea>
             </div>
             <div>
               <label for="genDescription">Explication (courte)</label>
-              <textarea id="genDescription" placeholder="Explication de ce que fait la commande"></textarea>
+              <textarea id="genDescription" placeholder="Explication de ce que fait la commande / snippet"></textarea>
             </div>
             <div>
               <label for="genExample">Exemple d'utilisation / test case</label>
-              <textarea id="genExample" placeholder="Comment tester/valider la commande"></textarea>
+              <textarea id="genExample" placeholder="Comment tester/valider la commande / snippet"></textarea>
             </div>
             <div>
               <label for="genId">ID (optionnel, auto-généré si vide)</label>
@@ -504,12 +638,39 @@
           </div>
 
           <div>
-            <label>Snippet JSON à coller dans <code>commands.json</code></label>
+            <label>Snippet JSON à coller dans <code>commands/xxx.js</code></label>
             <pre id="genOutput" class="json-output">// Le JSON généré apparaîtra ici...</pre>
           </div>
         </div>
       </section>
     </main>
+  </div>
+
+  <!-- Modale de zoom de commande -->
+  <div id="commandModalBackdrop" class="modal-backdrop hidden"></div>
+  <div id="commandModal" class="modal hidden">
+    <div class="modal-inner">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="modalTitle">Titre commande</div>
+          <div class="modal-meta" id="modalMeta"></div>
+        </div>
+        <button class="modal-close" id="modalCloseBtn" aria-label="Fermer">✕</button>
+      </div>
+
+      <div class="modal-body-scroll">
+        <div class="modal-command-block">
+          <pre id="modalCommand" class="command-text"></pre>
+        </div>
+        <div class="modal-command-actions">
+          <button id="modalCopyBtn" class="btn btn-secondary">
+            <span class="btn-icon">📋</span> Copier la commande
+          </button>
+        </div>
+        <div class="command-description" id="modalDescription"></div>
+        <div class="command-example" id="modalExample"></div>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="main.js"></script>
