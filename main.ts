@@ -1,13 +1,11 @@
-// ===== Utilitaires généraux =====
+// ========= utils =========
 function $(id) {
   const el = document.getElementById(id);
-  if (!el) {
-    throw new Error(`Element #${id} introuvable`);
-  }
+  if (!el) throw new Error("Element #" + id + " introuvable");
   return el;
 }
 
-// ===== Gestion des sections (tabs) =====
+// ========= tabs =========
 (function setupTabs() {
   const tabs = document.querySelectorAll(".tab");
   tabs.forEach((tab) => {
@@ -16,17 +14,14 @@ function $(id) {
       tab.classList.add("active");
       const target = tab.getAttribute("data-target");
       document.querySelectorAll(".section").forEach((section) => {
-        if (section.id === target) {
-          section.classList.add("active");
-        } else {
-          section.classList.remove("active");
-        }
+        if (section.id === target) section.classList.add("active");
+        else section.classList.remove("active");
       });
     });
   });
 })();
 
-// ===== NOTES : localStorage =====
+// ========= NOTES (localStorage) =========
 const NOTES_STORAGE_KEY = "notes_travail_modern_v1";
 
 function loadNotes() {
@@ -74,6 +69,7 @@ function renderNotes() {
 
       const meta = document.createElement("div");
       meta.className = "note-meta";
+
       const tagType = document.createElement("span");
       tagType.className =
         "tag " + (n.type === "cmd" ? "tag-type-cmd" : "tag-type-note");
@@ -108,9 +104,10 @@ function renderNotes() {
     });
   }
 
-  const countLabel = filtered.length === notes.length
-    ? `${filtered.length} note(s)`
-    : `${filtered.length} / ${notes.length} note(s) filtrées`;
+  const countLabel =
+    filtered.length === notes.length
+      ? filtered.length + " note(s)"
+      : filtered.length + " / " + notes.length + " note(s) filtrées";
   $("notesCount").textContent = countLabel;
 }
 
@@ -137,7 +134,7 @@ function setupNotes() {
       type,
       framework,
       env,
-      content,
+      content
     });
     saveNotes(notes);
 
@@ -152,7 +149,7 @@ function setupNotes() {
   $("exportBtn").onclick = () => {
     const notes = loadNotes();
     const blob = new Blob([JSON.stringify(notes, null, 2)], {
-      type: "application/json",
+      type: "application/json"
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -188,14 +185,12 @@ function setupNotes() {
   renderNotes();
 }
 
-// ===== COMMANDES : lecture de commands.json dans le repo =====
+// ========= COMMANDES (commands.json) =========
 let COMMANDS = [];
 
 function copyToClipboard(text) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).catch(() => {
-      fallbackCopy(text);
-    });
+    navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
   } else {
     fallbackCopy(text);
   }
@@ -219,7 +214,6 @@ function fallbackCopy(text) {
 function populateCommandFilters() {
   const frameworkSelect = $("cmdFramework");
   const envSelect = $("cmdEnv");
-
   const frameworks = new Set();
   const envs = new Set();
 
@@ -257,10 +251,8 @@ function renderCommands() {
       (c.label || "").toLowerCase().includes(search) ||
       (c.command || "").toLowerCase().includes(search) ||
       (c.description || "").toLowerCase().includes(search);
-
     const matchesFw = !fw || c.framework === fw;
     const matchesEnv = !env || c.env === env;
-
     return matchesSearch && matchesFw && matchesEnv;
   });
 
@@ -308,12 +300,12 @@ function renderCommands() {
 
       const btnCopy = document.createElement("button");
       btnCopy.className = "copy-btn";
-      btnCopy.innerHTML = '<span>📋</span><span>Copier</span>';
+      btnCopy.innerHTML = "<span>📋</span><span>Copier</span>";
       btnCopy.onclick = () => {
         copyToClipboard(c.command || "");
-        btnCopy.innerHTML = '<span>✅</span><span>Copié</span>';
+        btnCopy.innerHTML = "<span>✅</span><span>Copié</span>";
         setTimeout(() => {
-          btnCopy.innerHTML = '<span>📋</span><span>Copier</span>';
+          btnCopy.innerHTML = "<span>📋</span><span>Copier</span>";
         }, 1200);
       };
       commandBlock.appendChild(btnCopy);
@@ -326,16 +318,16 @@ function renderCommands() {
       item.appendChild(label);
       item.appendChild(commandBlock);
       item.appendChild(desc);
-
       list.appendChild(item);
     });
   }
 
-  $("commandsCount").textContent = `${filtered.length} commande(s) affichée(s)`;
+  $("commandsCount").textContent =
+    filtered.length + " commande(s) affichée(s)";
 }
 
 function setupCommands() {
-  // Lecture de commands.json hébergé sur le même repo / GitHub Pages
+  // commands.json servi depuis le même repo GitHub Pages
   fetch("commands.json", { cache: "no-store" })
     .then((res) => {
       if (!res.ok) throw new Error("Impossible de charger commands.json");
@@ -359,7 +351,7 @@ function setupCommands() {
   });
 }
 
-// ===== Init global =====
+// ========= init global =========
 window.addEventListener("DOMContentLoaded", () => {
   setupNotes();
   setupCommands();
