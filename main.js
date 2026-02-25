@@ -1,4 +1,6 @@
-// main.js (extrait en haut du fichier)
+// main.js (ES module)
+
+// === Imports des domaines ===
 import { javaSpringCommands } from "./commands/java_spring.js";
 import { angularCommands } from "./commands/angular.js";
 import { dockerCommands } from "./commands/docker.js";
@@ -7,8 +9,16 @@ import { windowsCommands } from "./commands/windows.js";
 import { gitCommands } from "./commands/git.js";
 import { sqlCommands } from "./commands/sql.js";
 import { sqlAdvancedCommands } from "./commands/sql_advanced.js";
+import { sqlPerfCommands } from "./commands/sql_perf_oracle_mysql.js";
 import { nosqlCommands } from "./commands/nosql.js";
+import { mongoAdvancedCommands } from "./commands/mongo_advanced.js";
+import { cloudKubeCommands } from "./commands/cloud_kubernetes.js";
+import { shellCommands } from "./commands/shell.js";
+import { terraformCommands } from "./commands/terraform.js";
+import { nexusCommands } from "./commands/nexus.js";
+import { pythonCommands } from "./commands/python.js";
 
+// === Tableau global de toutes les commandes (UNE SEULE FOIS) ===
 const COMMANDS = [
   ...javaSpringCommands,
   ...angularCommands,
@@ -18,8 +28,16 @@ const COMMANDS = [
   ...gitCommands,
   ...sqlCommands,
   ...sqlAdvancedCommands,
-  ...nosqlCommands
+  ...sqlPerfCommands,
+  ...nosqlCommands,
+  ...mongoAdvancedCommands,
+  ...cloudKubeCommands,
+  ...shellCommands,
+  ...terraformCommands,
+  ...nexusCommands,
+  ...pythonCommands
 ];
+
 // ====== Utilitaires ======
 function $(id) {
   const el = document.getElementById(id);
@@ -49,18 +67,7 @@ function fallbackCopy(text) {
   document.body.removeChild(textarea);
 }
 
-// ====== Données : concat de tous les domaines ======
-const COMMANDS = [
-  ...javaSpringCommands,
-  ...angularCommands,
-  ...dockerCommands,
-  ...linuxCommands,
-  ...windowsCommands,
-  ...gitCommands,
-  ...sqlCommands
-];
-
-// ====== Filtres & affichage ======
+// ====== Filtres & affichage des commandes ======
 function populateFrameworkFilter() {
   const select = $("frameworkFilter");
   const frameworks = new Set();
@@ -125,6 +132,7 @@ function renderCommands() {
       const item = document.createElement("div");
       item.className = "command-item";
 
+      // meta tags
       const meta = document.createElement("div");
       meta.className = "command-meta";
 
@@ -159,10 +167,12 @@ function renderCommands() {
       }
       meta.appendChild(tagOs);
 
+      // label
       const label = document.createElement("div");
       label.className = "command-label";
       label.textContent = c.label || c.id || "Commande";
 
+      // bloc commande + bouton copier
       const cmdBlock = document.createElement("div");
       cmdBlock.className = "command-command";
 
@@ -224,7 +234,7 @@ function initSearch() {
   });
 }
 
-// ====== Générateur JSON (inchangé) ======
+// ====== Générateur JSON ======
 function slugify(str) {
   return str
     .toLowerCase()
