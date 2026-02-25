@@ -1,199 +1,15 @@
-// ========= utils =========
+// ====== Utilitaires généraux ======
 function $(id) {
   const el = document.getElementById(id);
   if (!el) throw new Error("Element #" + id + " introuvable");
   return el;
 }
 
-// ========= tabs =========
-(function setupTabs() {
-  const tabs = document.querySelectorAll(".tab");
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      tabs.forEach((t) => t.classList.remove("active"));
-      tab.classList.add("active");
-      const target = tab.getAttribute("data-target");
-      document.querySelectorAll(".section").forEach((section) => {
-        if (section.id === target) section.classList.add("active");
-        else section.classList.remove("active");
-      });
-    });
-  });
-})();
-
-// ========= NOTES (localStorage) =========
-const NOTES_STORAGE_KEY = "notes_travail_modern_v1";
-
-function loadNotes() {
-  const raw = localStorage.getItem(NOTES_STORAGE_KEY);
-  if (!raw) return [];
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
-}
-
-function saveNotes(notes) {
-  localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(notes));
-}
-
-function renderNotes() {
-  const notes = loadNotes();
-  const list = $("notesList");
-  const search = $("searchInput").value.toLowerCase();
-  const fw = $("filterFramework").value.toLowerCase();
-  const env = $("filterEnv").value.toLowerCase();
-  const type = $("filterType").value;
-
-  list.innerHTML = "";
-
-  const filtered = notes
-    .filter((n) =>
-      (!search ||
-        (n.content || "").toLowerCase().includes(search) ||
-        (n.framework || "").toLowerCase().includes(search) ||
-        (n.env || "").toLowerCase().includes(search)) &&
-      (!fw || (n.framework || "").toLowerCase().includes(fw)) &&
-      (!env || (n.env || "").toLowerCase().includes(env)) &&
-      (!type || n.type === type)
-    )
-    .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-
-  if (!filtered.length) {
-    list.innerHTML = '<div class="empty-state">Aucune note pour ces filtres.</div>';
-  } else {
-    filtered.forEach((n) => {
-      const item = document.createElement("div");
-      item.className = "note-item";
-
-      const meta = document.createElement("div");
-      meta.className = "note-meta";
-
-      const tagType = document.createElement("span");
-      tagType.className =
-        "tag " + (n.type === "cmd" ? "tag-type-cmd" : "tag-type-note");
-      tagType.textContent = n.type === "cmd" ? "CMD" : "NOTE";
-      meta.appendChild(tagType);
-
-      const tagDate = document.createElement("span");
-      tagDate.className = "tag";
-      tagDate.textContent = n.date || "";
-      meta.appendChild(tagDate);
-
-      if (n.framework) {
-        const tagFw = document.createElement("span");
-        tagFw.className = "tag";
-        tagFw.textContent = n.framework;
-        meta.appendChild(tagFw);
-      }
-      if (n.env) {
-        const tagEnv = document.createElement("span");
-        tagEnv.className = "tag";
-        tagEnv.textContent = n.env;
-        meta.appendChild(tagEnv);
-      }
-
-      const content = document.createElement("div");
-      content.className = "note-content";
-      content.textContent = n.content || "";
-
-      item.appendChild(meta);
-      item.appendChild(content);
-      list.appendChild(item);
-    });
-  }
-
-  const countLabel =
-    filtered.length === notes.length
-      ? filtered.length + " note(s)"
-      : filtered.length + " / " + notes.length + " note(s) filtrées";
-  $("notesCount").textContent = countLabel;
-}
-
-function setupNotes() {
-  const today = new Date().toISOString().slice(0, 10);
-  $("dateInput").value = today;
-
-  $("saveBtn").onclick = () => {
-    const date = $("dateInput").value || today;
-    const type = $("typeInput").value === "cmd" ? "cmd" : "note";
-    const framework = $("frameworkInput").value.trim();
-    const env = $("envInput").value.trim();
-    const content = $("contentInput").value.trim();
-
-    if (!content) {
-      alert("Le contenu est vide.");
-      return;
-    }
-
-    const notes = loadNotes();
-    notes.push({
-      id: Date.now(),
-      date,
-      type,
-      framework,
-      env,
-      content
-    });
-    saveNotes(notes);
-
-    $("contentInput").value = "";
-    renderNotes();
-  };
-
-  ["searchInput", "filterFramework", "filterEnv", "filterType"].forEach((id) => {
-    $(id).addEventListener("input", renderNotes);
-  });
-
-  $("exportBtn").onclick = () => {
-    const notes = loadNotes();
-    const blob = new Blob([JSON.stringify(notes, null, 2)], {
-      type: "application/json"
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "notes_travail.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const importFileInput = $("importFile");
-  $("importBtn").onclick = () => importFileInput.click();
-
-  importFileInput.onchange = (e) => {
-    const target = e.target;
-    const file = target.files && target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      try {
-        const text = ev.target && ev.target.result;
-        const data = JSON.parse(text);
-        if (!Array.isArray(data)) throw new Error("format");
-        saveNotes(data);
-        renderNotes();
-      } catch (err) {
-        alert("Fichier JSON invalide.");
-      }
-    };
-    reader.readAsText(file);
-  };
-
-  renderNotes();
-}
-
-// ========= COMMANDES (commands.json) =========
-let COMMANDS = [];
-
-function copyToClipboard(text) {
+function copyText(text) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
-  } else {
-    fallbackCopy(text);
+    return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
   }
+  return Promise.resolve(fallbackCopy(text));
 }
 
 function fallbackCopy(text) {
@@ -205,60 +21,75 @@ function fallbackCopy(text) {
   textarea.select();
   try {
     document.execCommand("copy");
-  } catch (err) {
-    console.error("Impossible de copier", err);
+  } catch (e) {
+    console.error("Copy failed", e);
   }
   document.body.removeChild(textarea);
 }
 
-function populateCommandFilters() {
-  const frameworkSelect = $("cmdFramework");
-  const envSelect = $("cmdEnv");
-  const frameworks = new Set();
-  const envs = new Set();
+// ====== Données commandes (chargées depuis commands.json) ======
+let COMMANDS = [];
 
+// ====== Recherche & affichage commandes ======
+function populateFrameworkFilter() {
+  const select = $("frameworkFilter");
+  const frameworks = new Set();
   COMMANDS.forEach((c) => {
     if (c.framework) frameworks.add(c.framework);
-    if (c.env) envs.add(c.env);
   });
+  Array.from(frameworks)
+    .sort()
+    .forEach((fw) => {
+      const opt = document.createElement("option");
+      opt.value = fw;
+      opt.textContent = fw;
+      select.appendChild(opt);
+    });
+}
 
-  frameworks.forEach((fw) => {
-    const opt = document.createElement("option");
-    opt.value = fw;
-    opt.textContent = fw;
-    frameworkSelect.appendChild(opt);
-  });
-
-  envs.forEach((env) => {
-    const opt = document.createElement("option");
-    opt.value = env;
-    opt.textContent = env;
-    envSelect.appendChild(opt);
-  });
+function getSelectedOsFilter() {
+  const radios = document.querySelectorAll("input[name='osFilter']");
+  for (const r of radios) {
+    if (r.checked) return r.value;
+  }
+  return "";
 }
 
 function renderCommands() {
   const list = $("commandsList");
-  const search = $("cmdSearch").value.toLowerCase();
-  const fw = $("cmdFramework").value;
-  const env = $("cmdEnv").value;
+  const search = $("searchInput").value.toLowerCase().trim();
+  const fwFilter = $("frameworkFilter").value;
+  const osFilter = getSelectedOsFilter();
 
   list.innerHTML = "";
 
   const filtered = COMMANDS.filter((c) => {
-    const matchesSearch =
-      !search ||
-      (c.label || "").toLowerCase().includes(search) ||
-      (c.command || "").toLowerCase().includes(search) ||
-      (c.description || "").toLowerCase().includes(search);
-    const matchesFw = !fw || c.framework === fw;
-    const matchesEnv = !env || c.env === env;
-    return matchesSearch && matchesFw && matchesEnv;
+    const text = (
+      (c.label || "") +
+      " " +
+      (c.command || "") +
+      " " +
+      (c.description || "") +
+      " " +
+      (c.example || "") +
+      " " +
+      (c.framework || "") +
+      " " +
+      (c.category || "")
+    ).toLowerCase();
+
+    const matchSearch = !search || text.includes(search);
+    const matchFw = !fwFilter || c.framework === fwFilter;
+    const os = (c.os || "all").toLowerCase();
+    const matchOs =
+      !osFilter || os === "all" || os === osFilter.toLowerCase();
+
+    return matchSearch && matchFw && matchOs;
   });
 
   if (!filtered.length) {
     list.innerHTML =
-      '<div class="empty-state">Aucune commande pour ces filtres. Mets à jour <code>commands.json</code> si besoin.</div>';
+      '<div class="empty-state">Aucune commande pour ces critères. Ajoute-en dans <code>commands.json</code> si besoin.</div>';
   } else {
     filtered.forEach((c) => {
       const item = document.createElement("div");
@@ -284,50 +115,149 @@ function renderCommands() {
         meta.appendChild(tagCat);
       }
 
+      const tagOs = document.createElement("span");
+      tagOs.className = "tag";
+      const os = (c.os || "all").toLowerCase();
+      if (os === "linux") {
+        tagOs.classList.add("tag-os-linux");
+        tagOs.textContent = "Linux";
+      } else if (os === "windows") {
+        tagOs.classList.add("tag-os-windows");
+        tagOs.textContent = "Windows";
+      } else {
+        tagOs.textContent = "Tous OS";
+      }
+      meta.appendChild(tagOs);
+
       const label = document.createElement("div");
-      label.style.fontSize = "0.82rem";
-      label.style.fontWeight = "500";
-      label.style.marginBottom = "4px";
+      label.className = "command-label";
       label.textContent = c.label || c.id || "Commande";
 
-      const commandBlock = document.createElement("div");
-      commandBlock.className = "command-command";
+      const cmdBlock = document.createElement("div");
+      cmdBlock.className = "command-command";
 
       const cmdText = document.createElement("div");
       cmdText.className = "command-text";
       cmdText.textContent = c.command || "";
-      commandBlock.appendChild(cmdText);
+      cmdBlock.appendChild(cmdText);
 
-      const btnCopy = document.createElement("button");
-      btnCopy.className = "copy-btn";
-      btnCopy.innerHTML = "<span>📋</span><span>Copier</span>";
-      btnCopy.onclick = () => {
-        copyToClipboard(c.command || "");
-        btnCopy.innerHTML = "<span>✅</span><span>Copié</span>";
+      const btn = document.createElement("button");
+      btn.className = "copy-btn";
+      btn.innerHTML = "<span>📋</span><span>Copier</span>";
+      btn.onclick = () => {
+        copyText(c.command || "");
+        btn.innerHTML = "<span>✅</span><span>Copié</span>";
         setTimeout(() => {
-          btnCopy.innerHTML = "<span>📋</span><span>Copier</span>";
+          btn.innerHTML = "<span>📋</span><span>Copier</span>";
         }, 1200);
       };
-      commandBlock.appendChild(btnCopy);
+      cmdBlock.appendChild(btn);
 
       const desc = document.createElement("div");
       desc.className = "command-description";
       desc.textContent = c.description || "";
 
+      const ex = document.createElement("div");
+      ex.className = "command-example";
+      ex.textContent = c.example ? "Exemple / test : " + c.example : "";
+
       item.appendChild(meta);
       item.appendChild(label);
-      item.appendChild(commandBlock);
+      item.appendChild(cmdBlock);
       item.appendChild(desc);
+      if (c.example) item.appendChild(ex);
+
       list.appendChild(item);
     });
   }
 
   $("commandsCount").textContent =
-    filtered.length + " commande(s) affichée(s)";
+    filtered.length + " commande(s) affichée(s) / " + COMMANDS.length + " au total";
 }
 
-function setupCommands() {
-  // commands.json servi depuis le même repo GitHub Pages
+function initSearch() {
+  ["searchInput", "frameworkFilter"].forEach((id) => {
+    $(id).addEventListener("input", renderCommands);
+  });
+  document
+    .querySelectorAll("input[name='osFilter']")
+    .forEach((r) => r.addEventListener("change", renderCommands));
+}
+
+// ====== Générateur JSON pour commands.json ======
+function slugify(str) {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}
+
+function getSelectedGenOs() {
+  const radios = document.querySelectorAll("input[name='genOs']");
+  for (const r of radios) {
+    if (r.checked) return r.value;
+  }
+  return "all";
+}
+
+function generateJsonSnippet() {
+  const framework = $("genFramework").value.trim();
+  const env = $("genEnv").value;
+  const os = getSelectedGenOs();
+  const category = $("genCategory").value.trim();
+  const label = $("genLabel").value.trim();
+  const command = $("genCommand").value.trim();
+  const description = $("genDescription").value.trim();
+  const example = $("genExample").value.trim();
+  let id = $("genId").value.trim();
+
+  if (!label || !command || !framework) {
+    alert("Framework, Label et Commande sont obligatoires.");
+    return;
+  }
+
+  if (!id) {
+    id = slugify(label || command);
+  }
+
+  const obj = {
+    id,
+    framework,
+    env,
+    os,
+    category,
+    label,
+    command,
+    description,
+    example
+  };
+
+  const json = JSON.stringify(obj, null, 2);
+  $("genOutput").textContent = json;
+}
+
+function initGenerator() {
+  $("genBtn").addEventListener("click", generateJsonSnippet);
+
+  $("genCopyBtn").addEventListener("click", () => {
+    const text = $("genOutput").textContent || "";
+    if (!text || text.startsWith("//")) {
+      alert("Rien à copier : génère d'abord un JSON.");
+      return;
+    }
+    copyText(text).then(() => {
+      const btn = $("genCopyBtn");
+      const old = btn.innerHTML;
+      btn.innerHTML = "<span class='btn-icon'>✅</span><span>Copié</span>";
+      setTimeout(() => (btn.innerHTML = old), 1200);
+    });
+  });
+}
+
+// ====== Chargement initial ======
+window.addEventListener("DOMContentLoaded", () => {
   fetch("commands.json", { cache: "no-store" })
     .then((res) => {
       if (!res.ok) throw new Error("Impossible de charger commands.json");
@@ -336,7 +266,8 @@ function setupCommands() {
     .then((data) => {
       if (!Array.isArray(data)) throw new Error("Format commands.json invalide");
       COMMANDS = data;
-      populateCommandFilters();
+      populateFrameworkFilter();
+      initSearch();
       renderCommands();
     })
     .catch((err) => {
@@ -346,13 +277,5 @@ function setupCommands() {
       $("commandsCount").textContent = "0 commande";
     });
 
-  ["cmdSearch", "cmdFramework", "cmdEnv"].forEach((id) => {
-    $(id).addEventListener("input", renderCommands);
-  });
-}
-
-// ========= init global =========
-window.addEventListener("DOMContentLoaded", () => {
-  setupNotes();
-  setupCommands();
+  initGenerator();
 });
