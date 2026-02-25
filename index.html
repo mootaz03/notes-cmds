@@ -185,12 +185,6 @@
       border: 1px solid rgba(148,163,184,0.45);
     }
 
-    .btn-ghost {
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px dashed rgba(148,163,184,0.6);
-    }
-
     .btn:hover { transform: translateY(-0.5px); filter: brightness(1.03); }
     .btn-primary:hover { box-shadow: 0 14px 40px rgba(37,99,235,0.85); }
 
@@ -203,6 +197,7 @@
       gap: 10px;
       margin-top: 4px;
       margin-bottom: 6px;
+      align-items: flex-end;
     }
 
     .search-row .field { flex: 1; min-width: 180px; }
@@ -382,7 +377,7 @@
           <span class="pill">Recherche + Générateur d'entrée commands.json</span>
         </div>
         <div class="subtitle">
-          Recherche plein texte dans toutes les commandes (Java, Angular, Docker, Linux, Windows, Git, SQL) + génération d'objets JSON prêts à coller dans <code>commands.json</code>.
+          Recherche plein texte (Java, Angular, Docker, Linux, Windows, Git, SQL) + génération d'objets JSON prêts à coller dans <code>commands.json</code>.
         </div>
       </div>
     </header>
@@ -394,7 +389,7 @@
           <div>
             <div class="card-title">Recherche de commandes</div>
             <div class="card-subtitle">
-              Tape un mot-clé (ex: <code>logs</code>, <code>docker</code>, <code>spring</code>, <code>index</code>) + filtre par domaine et OS.
+              Tape un mot-clé (ex: <code>logs</code>, <code>docker</code>, <code>spring</code>, <code>index</code>) + filtre Domaine et OS, puis clique sur Rechercher (ou tape au clavier, c'est live).
             </div>
           </div>
           <span class="badge">Source : commands.json (GitHub)</span>
@@ -421,6 +416,11 @@
               </div>
             </div>
           </div>
+          <div class="field" style="max-width: 140px;">
+            <button id="searchBtn" class="btn btn-primary" style="width:100%;">
+              <span class="btn-icon">🔍</span> Rechercher
+            </button>
+          </div>
         </div>
 
         <div class="commands-list" id="commandsList">
@@ -431,7 +431,7 @@
 
         <div class="status-bar">
           <div class="status-pill" id="commandsCount"></div>
-          <div>Pour enrichir la base : ajoute simplement des entrées dans <code>commands.json</code> et <code>git commit &amp; push</code>.</div>
+          <div>Pour enrichir la base : ajoute des entrées dans <code>commands.json</code> puis <code>git commit &amp; push</code>.</div>
         </div>
       </section>
 
