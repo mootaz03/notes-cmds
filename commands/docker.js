@@ -166,4 +166,3 @@ export const dockerCommands = [
     example: "Exécute 'docker login registry.gitlab.com' pour pouvoir pousser/puller des images privées."
   }
 ];
-4.4. commands/
