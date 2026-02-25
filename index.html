@@ -2,88 +2,536 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Notes & Cmds de travail</title>
+  <title>Notes & Commandes de travail</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body { font-family: sans-serif; margin: 10px 20px; }
-    h1 { font-size: 1.4rem; }
-    .row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
-    label { font-size: 0.9rem; }
-    input, select, textarea { font-size: 0.9rem; }
-    textarea { width: 100%; height: 80px; }
-    .notes-list { max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 5px; }
-    .note-item { border-bottom: 1px solid #eee; padding: 4px 0; }
-    .tag { font-size: 0.75rem; background: #eef; padding: 1px 4px; border-radius: 3px; margin-right: 4px; }
-    .type-note { background: #d1ffd1; }
-    .type-cmd { background: #ffe1b3; }
-    button { cursor: pointer; }
-    pre { margin: 3px 0 0 0; font-size:0.9rem; white-space: pre-wrap; }
+    :root {
+      --bg: #020617;
+      --bg-soft: #0b1220;
+      --accent: #3b82f6;
+      --accent2: #22c55e;
+      --border-subtle: rgba(148,163,184,0.35);
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --radius-lg: 18px;
+      --radius-md: 10px;
+      --shadow-soft: 0 20px 55px rgba(15,23,42,0.9);
+      --transition-fast: 0.15s ease-out;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1d283a 0, #020617 40%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1120px;
+      background: linear-gradient(145deg, rgba(15,23,42,0.98), rgba(15,23,42,0.96));
+      border-radius: 24px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 20px 20px 22px;
+      backdrop-filter: blur(16px);
+    }
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 0.7rem;
+      border: 1px solid rgba(148,163,184,0.45);
+      color: var(--text-muted);
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .tabs {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.98);
+      border: 1px solid rgba(148,163,184,0.45);
+    }
+
+    .tab {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      padding: 6px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      transform: translateY(-0.5px);
+      box-shadow: 0 12px 32px rgba(37,99,235,0.6);
+    }
+
+    .tab-icon { font-size: 0.9rem; }
+
+    .sections { display: grid; grid-template-columns: 1fr; gap: 14px; }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .card {
+      background: radial-gradient(circle at top left, var(--bg-soft), #020617);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 14px 14px 12px;
+      box-shadow: 0 12px 32px rgba(15,23,42,0.85);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .card-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      border: 1px solid rgba(148,163,184,0.55);
+      color: var(--text-muted);
+    }
+
+    .grid { display: grid; gap: 10px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    @media (max-width: 900px) {
+      .app-shell { padding: 16px; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .app-header { flex-direction: column; align-items: flex-start; }
+    }
+
+    label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(51,65,85,0.9);
+      background: linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,0.93));
+      padding: 7px 9px;
+      font-size: 0.82rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(37,99,235,0.6);
+      background: radial-gradient(circle at top left, rgba(15,23,42,1), rgba(15,23,42,0.96));
+    }
+
+    textarea { min-height: 90px; resize: vertical; }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 7px 14px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), filter var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      box-shadow: 0 10px 28px rgba(37,99,235,0.7);
+    }
+
+    .btn-secondary {
+      background: rgba(15,23,42,0.96);
+      color: var(--text-muted);
+      border: 1px solid rgba(148,163,184,0.45);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px dashed rgba(148,163,184,0.6);
+    }
+
+    .btn:hover { transform: translateY(-0.5px); filter: brightness(1.03); }
+    .btn-primary:hover { box-shadow: 0 14px 40px rgba(37,99,235,0.85); }
+
+    .btn-icon { font-size: 0.9rem; }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+
+    .notes-list, .commands-list {
+      max-height: 290px;
+      overflow-y: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(30,64,175,0.7);
+      background: radial-gradient(circle at top, #020617, #020617);
+      padding: 6px;
+      scroll-behavior: smooth;
+    }
+
+    .note-item, .command-item {
+      border-radius: 11px;
+      padding: 8px 9px 7px;
+      background: linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,0.94));
+      border: 1px solid rgba(30,64,175,0.65);
+      margin-bottom: 6px;
+    }
+
+    .note-meta, .command-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+      font-size: 0.72rem;
+    }
+
+    .tag {
+      padding: 1px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.55);
+      color: var(--text-muted);
+      background: rgba(15,23,42,0.96);
+    }
+
+    .tag-type-note {
+      border-color: rgba(52,211,153,0.9);
+      color: #6ee7b7;
+      background: rgba(6,95,70,0.5);
+    }
+
+    .tag-type-cmd {
+      border-color: rgba(249,115,22,0.9);
+      color: #fed7aa;
+      background: rgba(124,45,18,0.55);
+    }
+
+    .note-content, .command-command {
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      line-height: 1.35;
+    }
+
+    .command-command {
+      background: rgba(15,23,42,0.97);
+      border-radius: 8px;
+      border: 1px solid rgba(30,64,175,0.75);
+      padding: 6px 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .command-text { overflow-wrap: anywhere; }
+
+    .command-description {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .copy-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 4px 7px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      background: rgba(30,64,175,0.95);
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+      transition: background var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .copy-btn:hover {
+      background: rgba(59,130,246,1);
+      transform: translateY(-0.5px);
+    }
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .filters-row .filter-field {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .empty-state {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      padding: 8px;
+      text-align: center;
+    }
+
+    .status-bar {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(148,163,184,0.5);
+    }
   </style>
 </head>
 <body>
-  <h1>Notes & commandes de travail</h1>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="title-block">
+        <div class="title">
+          Notes & Commandes
+          <span class="pill">GitHub Pages • localStorage • commands.json</span>
+        </div>
+        <div class="subtitle">
+          Notes perso dans ton navigateur • Commandes senior (Java, Angular, Docker, Linux, Git, SQL) versionnées dans le repo
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tab active" data-target="section-notes">
+          <span class="tab-icon">📝</span><span>Notes</span>
+        </button>
+        <button class="tab" data-target="section-commands">
+          <span class="tab-icon">⌨️</span><span>Commandes</span>
+        </button>
+      </div>
+    </header>
 
-  <div class="row">
-    <div>
-      <label>Date</label><br>
-      <input type="date" id="dateInput">
-    </div>
-    <div>
-      <label>Type</label><br>
-      <select id="typeInput">
-        <option value="note">Note journalière</option>
-        <option value="cmd">Commande / snippet</option>
-      </select>
-    </div>
-    <div>
-      <label>Framework</label><br>
-      <input type="text" id="frameworkInput" placeholder="ex: React, Symfony, Spring">
-    </div>
-    <div>
-      <label>Environnement</label><br>
-      <input type="text" id="envInput" placeholder="ex: Linux, Windows, Docker">
-    </div>
+    <main class="sections">
+      <!-- NOTES -->
+      <section id="section-notes" class="section active">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Nouvelle note</div>
+                <div class="card-subtitle">Journal de travail ou snippet rapide</div>
+              </div>
+              <span class="badge">Stockage local (localStorage)</span>
+            </div>
+
+            <div class="grid">
+              <div class="grid grid-2">
+                <div>
+                  <label for="dateInput">Date</label>
+                  <input type="date" id="dateInput" />
+                </div>
+                <div>
+                  <label for="typeInput">Type</label>
+                  <select id="typeInput">
+                    <option value="note">Note journalière</option>
+                    <option value="cmd">Commande / snippet</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-2">
+                <div>
+                  <label for="frameworkInput">Framework / stack</label>
+                  <input type="text" id="frameworkInput" placeholder="ex: Spring Boot, Angular, Docker" />
+                </div>
+                <div>
+                  <label for="envInput">Environnement</label>
+                  <input type="text" id="envInput" placeholder="ex: Windows, Linux, Docker" />
+                </div>
+              </div>
+              <div>
+                <label for="contentInput">Contenu</label>
+                <textarea id="contentInput" placeholder="Ta note ou ta commande ici..."></textarea>
+              </div>
+              <div class="btn-row">
+                <button id="saveBtn" class="btn btn-primary">
+                  <span class="btn-icon">💾</span> Enregistrer
+                </button>
+                <button id="exportBtn" class="btn btn-secondary">
+                  <span class="btn-icon">📤</span> Exporter JSON
+                </button>
+                <input type="file" id="importFile" style="display:none;" />
+                <button id="importBtn" class="btn btn-ghost">
+                  <span class="btn-icon">📥</span> Importer JSON
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Historique des notes</div>
+                <div class="card-subtitle">Filtre par texte, type, framework, environnement</div>
+              </div>
+            </div>
+
+            <div class="filters-row">
+              <div class="filter-field">
+                <label for="searchInput">Recherche texte</label>
+                <input type="text" id="searchInput" placeholder="Contenu, framework, env..." />
+              </div>
+              <div class="filter-field">
+                <label for="filterType">Type</label>
+                <select id="filterType">
+                  <option value="">Tous</option>
+                  <option value="note">Notes</option>
+                  <option value="cmd">Cmds</option>
+                </select>
+              </div>
+              <div class="filter-field">
+                <label for="filterFramework">Framework</label>
+                <input type="text" id="filterFramework" placeholder="ex: Spring" />
+              </div>
+              <div class="filter-field">
+                <label for="filterEnv">Environnement</label>
+                <input type="text" id="filterEnv" placeholder="ex: Linux" />
+              </div>
+            </div>
+
+            <div class="notes-list" id="notesList"></div>
+
+            <div class="status-bar">
+              <div class="status-pill" id="notesCount"></div>
+              <div>Utilise Export/Import JSON pour déplacer tes notes entre machines.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMMANDES -->
+      <section id="section-commands" class="section">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Commandes versionnées</div>
+                <div class="card-subtitle">Données lues depuis <code>commands.json</code> dans le repo</div>
+              </div>
+              <span class="badge">Lecture seule • Git pour les updates</span>
+            </div>
+
+            <div class="filters-row">
+              <div class="filter-field">
+                <label for="cmdSearch">Recherche texte</label>
+                <input type="text" id="cmdSearch" placeholder="Label, commande, description..." />
+              </div>
+              <div class="filter-field">
+                <label for="cmdFramework">Framework</label>
+                <select id="cmdFramework">
+                  <option value="">Tous</option>
+                </select>
+              </div>
+              <div class="filter-field">
+                <label for="cmdEnv">Environnement</label>
+                <select id="cmdEnv">
+                  <option value="">Tous</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="status-bar">
+              <div class="status-pill" id="commandsCount"></div>
+              <div>Pour ajouter une commande : modifier <code>commands.json</code> puis <code>git commit && git push</code>.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Liste des commandes</div>
+                <div class="card-subtitle">Clique sur « Copier » pour coller dans ton terminal ou ton IDE</div>
+              </div>
+            </div>
+
+            <div class="commands-list" id="commandsList">
+              <div class="empty-state">
+                Chargement des commandes depuis <code>commands.json</code>...
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <div>
-    <label>Contenu</label><br>
-    <textarea id="contentInput" placeholder="Ta note ou ta commande ici..."></textarea>
-  </div>
-
-  <div style="margin-top: 5px;">
-    <button id="saveBtn">Enregistrer</button>
-    <button id="exportBtn">Exporter JSON</button>
-    <input type="file" id="importFile" style="display:none;">
-    <button id="importBtn">Importer JSON</button>
-  </div>
-
-  <hr>
-
-  <div class="row">
-    <div>
-      <label>Filtre texte</label><br>
-      <input type="text" id="searchInput" placeholder="Recherche dans le contenu...">
-    </div>
-    <div>
-      <label>Filtre framework</label><br>
-      <input type="text" id="filterFramework" placeholder="ex: React">
-    </div>
-    <div>
-      <label>Filtre env</label><br>
-      <input type="text" id="filterEnv" placeholder="ex: Linux">
-    </div>
-    <div>
-      <label>Filtre type</label><br>
-      <select id="filterType">
-        <option value="">Tous</option>
-        <option value="note">Notes</option>
-        <option value="cmd">Cmds</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="notes-list" id="notesList"></div>
-
-  <!-- JS pur, sans build -->
   <script src="main.js"></script>
 </body>
 </html>
