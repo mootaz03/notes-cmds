@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Notes & Commandes de travail</title>
+  <title>Cheatsheet Dev – Recherche & Générateur commands.json</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
@@ -79,41 +79,11 @@
       color: var(--text-muted);
     }
 
-    .tabs {
-      display: inline-flex;
-      padding: 3px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.98);
-      border: 1px solid rgba(148,163,184,0.45);
+    .sections {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
     }
-
-    .tab {
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      padding: 6px 14px;
-      border-radius: 999px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
-    }
-
-    .tab.active {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: white;
-      transform: translateY(-0.5px);
-      box-shadow: 0 12px 32px rgba(37,99,235,0.6);
-    }
-
-    .tab-icon { font-size: 0.9rem; }
-
-    .sections { display: grid; grid-template-columns: 1fr; gap: 14px; }
-
-    .section { display: none; }
-    .section.active { display: block; }
 
     .card {
       background: radial-gradient(circle at top left, var(--bg-soft), #020617);
@@ -227,17 +197,53 @@
     .btn-icon { font-size: 0.9rem; }
     .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
 
-    .notes-list, .commands-list {
-      max-height: 290px;
+    .search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+      margin-bottom: 6px;
+    }
+
+    .search-row .field { flex: 1; min-width: 180px; }
+
+    .os-filter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .os-filter label {
+      text-transform: none;
+      letter-spacing: 0;
+      margin-bottom: 0;
+      font-size: 0.78rem;
+    }
+
+    .radio-group {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .radio-group input {
+      width: auto;
+      margin-right: 4px;
+    }
+
+    .commands-list {
+      max-height: 320px;
       overflow-y: auto;
       border-radius: var(--radius-md);
       border: 1px solid rgba(30,64,175,0.7);
       background: radial-gradient(circle at top, #020617, #020617);
       padding: 6px;
-      scroll-behavior: smooth;
     }
 
-    .note-item, .command-item {
+    .command-item {
       border-radius: 11px;
       padding: 8px 9px 7px;
       background: linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,0.94));
@@ -245,7 +251,7 @@
       margin-bottom: 6px;
     }
 
-    .note-meta, .command-meta {
+    .command-meta {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -262,25 +268,28 @@
       background: rgba(15,23,42,0.96);
     }
 
-    .tag-type-note {
+    .tag-os-linux {
       border-color: rgba(52,211,153,0.9);
       color: #6ee7b7;
-      background: rgba(6,95,70,0.5);
+      background: rgba(6,95,70,0.55);
     }
 
-    .tag-type-cmd {
-      border-color: rgba(249,115,22,0.9);
-      color: #fed7aa;
-      background: rgba(124,45,18,0.55);
+    .tag-os-windows {
+      border-color: rgba(59,130,246,0.9);
+      color: #bfdbfe;
+      background: rgba(30,64,175,0.6);
     }
 
-    .note-content, .command-command {
-      font-size: 0.8rem;
-      white-space: pre-wrap;
-      line-height: 1.35;
+    .command-label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      margin-bottom: 4px;
     }
 
     .command-command {
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      line-height: 1.35;
       background: rgba(15,23,42,0.97);
       border-radius: 8px;
       border: 1px solid rgba(30,64,175,0.75);
@@ -295,9 +304,15 @@
     .command-text { overflow-wrap: anywhere; }
 
     .command-description {
-      font-size: 0.75rem;
+      font-size: 0.76rem;
       color: var(--text-muted);
       margin-top: 4px;
+    }
+
+    .command-example {
+      font-size: 0.76rem;
+      color: #a5b4fc;
+      margin-top: 2px;
     }
 
     .copy-btn {
@@ -318,18 +333,6 @@
     .copy-btn:hover {
       background: rgba(59,130,246,1);
       transform: translateY(-0.5px);
-    }
-
-    .filters-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 4px;
-    }
-
-    .filters-row .filter-field {
-      flex: 1;
-      min-width: 150px;
     }
 
     .empty-state {
@@ -355,6 +358,19 @@
       background: rgba(15,23,42,0.96);
       border: 1px solid rgba(148,163,184,0.5);
     }
+
+    .json-output {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.78rem;
+      min-height: 90px;
+      background: rgba(15,23,42,0.97);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(30,64,175,0.75);
+      padding: 6px 8px;
+      color: #e5e7eb;
+      white-space: pre;
+      overflow-x: auto;
+    }
   </style>
 </head>
 <body>
@@ -362,170 +378,134 @@
     <header class="app-header">
       <div class="title-block">
         <div class="title">
-          Notes & Commandes
-          <span class="pill">GitHub Pages • localStorage • commands.json</span>
+          Cheatsheet Dev
+          <span class="pill">Recherche + Générateur d'entrée commands.json</span>
         </div>
         <div class="subtitle">
-          Notes perso dans ton navigateur • Commandes senior (Java, Angular, Docker, Linux, Git, SQL) versionnées dans le repo
+          Recherche plein texte dans toutes les commandes (Java, Angular, Docker, Linux, Windows, Git, SQL) + génération d'objets JSON prêts à coller dans <code>commands.json</code>.
         </div>
-      </div>
-      <div class="tabs">
-        <button class="tab active" data-target="section-notes">
-          <span class="tab-icon">📝</span><span>Notes</span>
-        </button>
-        <button class="tab" data-target="section-commands">
-          <span class="tab-icon">⌨️</span><span>Commandes</span>
-        </button>
       </div>
     </header>
 
     <main class="sections">
-      <!-- NOTES -->
-      <section id="section-notes" class="section active">
-        <div class="grid grid-2">
-          <div class="card">
-            <div class="card-header">
-              <div>
-                <div class="card-title">Nouvelle note</div>
-                <div class="card-subtitle">Journal de travail ou snippet rapide</div>
-              </div>
-              <span class="badge">Stockage local (localStorage)</span>
-            </div>
-
-            <div class="grid">
-              <div class="grid grid-2">
-                <div>
-                  <label for="dateInput">Date</label>
-                  <input type="date" id="dateInput" />
-                </div>
-                <div>
-                  <label for="typeInput">Type</label>
-                  <select id="typeInput">
-                    <option value="note">Note journalière</option>
-                    <option value="cmd">Commande / snippet</option>
-                  </select>
-                </div>
-              </div>
-              <div class="grid grid-2">
-                <div>
-                  <label for="frameworkInput">Framework / stack</label>
-                  <input type="text" id="frameworkInput" placeholder="ex: Spring Boot, Angular, Docker" />
-                </div>
-                <div>
-                  <label for="envInput">Environnement</label>
-                  <input type="text" id="envInput" placeholder="ex: Windows, Linux, Docker" />
-                </div>
-              </div>
-              <div>
-                <label for="contentInput">Contenu</label>
-                <textarea id="contentInput" placeholder="Ta note ou ta commande ici..."></textarea>
-              </div>
-              <div class="btn-row">
-                <button id="saveBtn" class="btn btn-primary">
-                  <span class="btn-icon">💾</span> Enregistrer
-                </button>
-                <button id="exportBtn" class="btn btn-secondary">
-                  <span class="btn-icon">📤</span> Exporter JSON
-                </button>
-                <input type="file" id="importFile" style="display:none;" />
-                <button id="importBtn" class="btn btn-ghost">
-                  <span class="btn-icon">📥</span> Importer JSON
-                </button>
-              </div>
+      <!-- Carte recherche / résultats -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Recherche de commandes</div>
+            <div class="card-subtitle">
+              Tape un mot-clé (ex: <code>logs</code>, <code>docker</code>, <code>spring</code>, <code>index</code>) + filtre par domaine et OS.
             </div>
           </div>
+          <span class="badge">Source : commands.json (GitHub)</span>
+        </div>
 
-          <div class="card">
-            <div class="card-header">
-              <div>
-                <div class="card-title">Historique des notes</div>
-                <div class="card-subtitle">Filtre par texte, type, framework, environnement</div>
+        <div class="search-row">
+          <div class="field">
+            <label for="searchInput">Recherche texte (any words)</label>
+            <input type="text" id="searchInput" placeholder="Commande, description, exemple, domaine..." />
+          </div>
+          <div class="field">
+            <label for="frameworkFilter">Domaine</label>
+            <select id="frameworkFilter">
+              <option value="">Tous</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>OS cible</label>
+            <div class="os-filter">
+              <div class="radio-group">
+                <label><input type="radio" name="osFilter" value="" checked /> Tous</label>
+                <label><input type="radio" name="osFilter" value="linux" /> Linux</label>
+                <label><input type="radio" name="osFilter" value="windows" /> Windows</label>
               </div>
-            </div>
-
-            <div class="filters-row">
-              <div class="filter-field">
-                <label for="searchInput">Recherche texte</label>
-                <input type="text" id="searchInput" placeholder="Contenu, framework, env..." />
-              </div>
-              <div class="filter-field">
-                <label for="filterType">Type</label>
-                <select id="filterType">
-                  <option value="">Tous</option>
-                  <option value="note">Notes</option>
-                  <option value="cmd">Cmds</option>
-                </select>
-              </div>
-              <div class="filter-field">
-                <label for="filterFramework">Framework</label>
-                <input type="text" id="filterFramework" placeholder="ex: Spring" />
-              </div>
-              <div class="filter-field">
-                <label for="filterEnv">Environnement</label>
-                <input type="text" id="filterEnv" placeholder="ex: Linux" />
-              </div>
-            </div>
-
-            <div class="notes-list" id="notesList"></div>
-
-            <div class="status-bar">
-              <div class="status-pill" id="notesCount"></div>
-              <div>Utilise Export/Import JSON pour déplacer tes notes entre machines.</div>
             </div>
           </div>
         </div>
+
+        <div class="commands-list" id="commandsList">
+          <div class="empty-state">
+            Chargement des commandes depuis <code>commands.json</code>...
+          </div>
+        </div>
+
+        <div class="status-bar">
+          <div class="status-pill" id="commandsCount"></div>
+          <div>Pour enrichir la base : ajoute simplement des entrées dans <code>commands.json</code> et <code>git commit &amp; push</code>.</div>
+        </div>
       </section>
 
-      <!-- COMMANDES -->
-      <section id="section-commands" class="section">
+      <!-- Carte générateur JSON -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Générateur d'entrée commands.json</div>
+            <div class="card-subtitle">
+              Renseigne les champs → clique sur « Générer JSON » → copie le snippet et colle-le dans le tableau <code>commands.json</code>.
+            </div>
+          </div>
+          <span class="badge">Output JSON + bouton Copier</span>
+        </div>
+
         <div class="grid grid-2">
-          <div class="card">
-            <div class="card-header">
-              <div>
-                <div class="card-title">Commandes versionnées</div>
-                <div class="card-subtitle">Données lues depuis <code>commands.json</code> dans le repo</div>
-              </div>
-              <span class="badge">Lecture seule • Git pour les updates</span>
+          <div class="grid">
+            <div>
+              <label for="genFramework">Domaine / Framework</label>
+              <input type="text" id="genFramework" placeholder="ex: Java / Spring Boot, Docker, Git, SQL..." />
             </div>
-
-            <div class="filters-row">
-              <div class="filter-field">
-                <label for="cmdSearch">Recherche texte</label>
-                <input type="text" id="cmdSearch" placeholder="Label, commande, description..." />
-              </div>
-              <div class="filter-field">
-                <label for="cmdFramework">Framework</label>
-                <select id="cmdFramework">
-                  <option value="">Tous</option>
-                </select>
-              </div>
-              <div class="filter-field">
-                <label for="cmdEnv">Environnement</label>
-                <select id="cmdEnv">
-                  <option value="">Tous</option>
-                </select>
+            <div>
+              <label for="genEnv">Type d'environnement</label>
+              <select id="genEnv">
+                <option value="CLI">CLI</option>
+                <option value="DB">DB</option>
+                <option value="HTTP">HTTP</option>
+              </select>
+            </div>
+            <div>
+              <label>OS cible</label>
+              <div class="radio-group">
+                <label><input type="radio" name="genOs" value="linux" /> Linux</label>
+                <label><input type="radio" name="genOs" value="windows" /> Windows</label>
+                <label><input type="radio" name="genOs" value="all" checked /> Tous</label>
               </div>
             </div>
-
-            <div class="status-bar">
-              <div class="status-pill" id="commandsCount"></div>
-              <div>Pour ajouter une commande : modifier <code>commands.json</code> puis <code>git commit && git push</code>.</div>
+            <div>
+              <label for="genCategory">Catégorie</label>
+              <input type="text" id="genCategory" placeholder="ex: build, run, debug, logs, sql, git..." />
+            </div>
+            <div>
+              <label for="genLabel">Label (titre lisible)</label>
+              <input type="text" id="genLabel" placeholder="ex: Lancer l'app Spring Boot en local" />
+            </div>
+            <div>
+              <label for="genCommand">Commande exacte</label>
+              <textarea id="genCommand" placeholder="ex: mvn spring-boot:run"></textarea>
+            </div>
+            <div>
+              <label for="genDescription">Explication (courte)</label>
+              <textarea id="genDescription" placeholder="Explication de ce que fait la commande"></textarea>
+            </div>
+            <div>
+              <label for="genExample">Exemple d'utilisation / test case</label>
+              <textarea id="genExample" placeholder="Comment tester/valider la commande"></textarea>
+            </div>
+            <div>
+              <label for="genId">ID (optionnel, auto-généré si vide)</label>
+              <input type="text" id="genId" placeholder="ex: spring-boot-run-dev" />
+            </div>
+            <div class="btn-row">
+              <button id="genBtn" class="btn btn-primary">
+                <span class="btn-icon">⚙️</span> Générer JSON
+              </button>
+              <button id="genCopyBtn" class="btn btn-secondary">
+                <span class="btn-icon">📋</span> Copier JSON
+              </button>
             </div>
           </div>
 
-          <div class="card">
-            <div class="card-header">
-              <div>
-                <div class="card-title">Liste des commandes</div>
-                <div class="card-subtitle">Clique sur « Copier » pour coller dans ton terminal ou ton IDE</div>
-              </div>
-            </div>
-
-            <div class="commands-list" id="commandsList">
-              <div class="empty-state">
-                Chargement des commandes depuis <code>commands.json</code>...
-              </div>
-            </div>
+          <div>
+            <label>Snippet JSON à coller dans <code>commands.json</code></label>
+            <pre id="genOutput" class="json-output">// Le JSON généré apparaîtra ici...</pre>
           </div>
         </div>
       </section>
