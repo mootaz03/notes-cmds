@@ -1,6 +1,6 @@
 // main.js (ES module)
 
-// === Imports des domaines ===
+// === Imports des domaines (assure-toi que ces fichiers existent dans commands/) ===
 import { javaSpringCommands } from "./commands/java_spring.js";
 import { angularCommands } from "./commands/angular.js";
 import { dockerCommands } from "./commands/docker.js";
@@ -17,6 +17,9 @@ import { shellCommands } from "./commands/shell.js";
 import { terraformCommands } from "./commands/terraform.js";
 import { nexusCommands } from "./commands/nexus.js";
 import { pythonCommands } from "./commands/python.js";
+import { awsCommands } from "./commands/aws.js";
+import { azureCommands } from "./commands/azure.js";
+import { gcloudCommands } from "./commands/gcloud.js";
 
 // === Tableau global de toutes les commandes (UNE SEULE FOIS) ===
 const COMMANDS = [
@@ -35,8 +38,13 @@ const COMMANDS = [
   ...shellCommands,
   ...terraformCommands,
   ...nexusCommands,
-  ...pythonCommands
+  ...pythonCommands,
+  ...awsCommands,
+  ...azureCommands,
+  ...gcloudCommands
 ];
+
+let CURRENT_COMMAND = null;
 
 // ====== Utilitaires ======
 function $(id) {
@@ -67,7 +75,7 @@ function fallbackCopy(text) {
   document.body.removeChild(textarea);
 }
 
-// ====== Filtres & affichage des commandes ======
+// ====== Filtres & affichage ======
 function populateFrameworkFilter() {
   const select = $("frameworkFilter");
   const frameworks = new Set();
@@ -132,12 +140,12 @@ function renderCommands() {
       const item = document.createElement("div");
       item.className = "command-item";
 
-      // meta tags
+      // meta
       const meta = document.createElement("div");
       meta.className = "command-meta";
 
       const tagFw = document.createElement("span");
-      tagFw.className = "tag";
+      tagFw.className = "tag tag-framework";
       tagFw.textContent = c.framework || "N/A";
       meta.appendChild(tagFw);
 
@@ -148,7 +156,7 @@ function renderCommands() {
 
       if (c.category) {
         const tagCat = document.createElement("span");
-        tagCat.className = "tag";
+        tagCat.className = "tag tag-category";
         tagCat.textContent = c.category;
         meta.appendChild(tagCat);
       }
@@ -184,13 +192,14 @@ function renderCommands() {
       const btn = document.createElement("button");
       btn.className = "copy-btn";
       btn.innerHTML = "<span>📋</span><span>Copier</span>";
-      btn.onclick = () => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
         copyText(c.command || "");
         btn.innerHTML = "<span>✅</span><span>Copié</span>";
         setTimeout(() => {
           btn.innerHTML = "<span>📋</span><span>Copier</span>";
         }, 1200);
-      };
+      });
       cmdBlock.appendChild(btn);
 
       const desc = document.createElement("div");
@@ -206,6 +215,10 @@ function renderCommands() {
       item.appendChild(cmdBlock);
       item.appendChild(desc);
       if (c.example) item.appendChild(ex);
+
+      item.addEventListener("click", () => {
+        openCommandModal(c);
+      });
 
       list.appendChild(item);
     });
@@ -306,10 +319,91 @@ function initGenerator() {
   });
 }
 
+// ====== Modale (zoom commande) ======
+function openCommandModal(cmd) {
+  CURRENT_COMMAND = cmd;
+  const backdrop = $("commandModalBackdrop");
+  const modal = $("commandModal");
+  const titleEl = $("modalTitle");
+  const metaEl = $("modalMeta");
+  const cmdEl = $("modalCommand");
+  const descEl = $("modalDescription");
+  const exEl = $("modalExample");
+
+  titleEl.textContent = cmd.label || cmd.id || "Commande";
+  cmdEl.textContent = cmd.command || "";
+  descEl.textContent = cmd.description || "";
+  exEl.textContent = cmd.example ? "Exemple / test : " + cmd.example : "";
+
+  metaEl.innerHTML = "";
+  const fwTag = document.createElement("span");
+  fwTag.className = "tag tag-framework";
+  fwTag.textContent = cmd.framework || "N/A";
+  metaEl.appendChild(fwTag);
+
+  const envTag = document.createElement("span");
+  envTag.className = "tag";
+  envTag.textContent = cmd.env || "Env";
+  metaEl.appendChild(envTag);
+
+  if (cmd.category) {
+    const catTag = document.createElement("span");
+    catTag.className = "tag tag-category";
+    catTag.textContent = cmd.category;
+    metaEl.appendChild(catTag);
+  }
+
+  const osTag = document.createElement("span");
+  osTag.className = "tag";
+  const os = (cmd.os || "all").toLowerCase();
+  if (os === "linux") {
+    osTag.classList.add("tag-os-linux");
+    osTag.textContent = "Linux";
+  } else if (os === "windows") {
+    osTag.classList.add("tag-os-windows");
+    osTag.textContent = "Windows";
+  } else {
+    osTag.textContent = "Tous OS";
+  }
+  metaEl.appendChild(osTag);
+
+  backdrop.classList.remove("hidden");
+  modal.classList.remove("hidden");
+}
+
+function closeCommandModal() {
+  CURRENT_COMMAND = null;
+  $("commandModalBackdrop").classList.add("hidden");
+  $("commandModal").classList.add("hidden");
+}
+
 // ====== Init global ======
 window.addEventListener("DOMContentLoaded", () => {
   populateFrameworkFilter();
   initSearch();
   initGenerator();
   renderCommands();
+
+  // wiring modale
+  const closeBtn = $("modalCloseBtn");
+  const backdrop = $("commandModalBackdrop");
+  const copyBtn = $("modalCopyBtn");
+
+  closeBtn.addEventListener("click", () => closeCommandModal());
+  backdrop.addEventListener("click", () => closeCommandModal());
+
+  copyBtn.addEventListener("click", () => {
+    if (!CURRENT_COMMAND) return;
+    copyText(CURRENT_COMMAND.command || "");
+    copyBtn.innerHTML = "<span class='btn-icon'>✅</span><span>Copié</span>";
+    setTimeout(() => {
+      copyBtn.innerHTML = "<span class='btn-icon'>📋</span><span>Copier la commande</span>";
+    }, 1200);
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeCommandModal();
+    }
+  });
 });
