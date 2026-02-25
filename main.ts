@@ -1,29 +1,20 @@
-interface Note {
-  id: number;
-  date: string;
-  type: "note" | "cmd";
-  framework: string;
-  env: string;
-  content: string;
-}
+const STORAGE_KEY = "notes_travail_js_v1";
 
-const STORAGE_KEY = "notes_travail_ts_v1";
-
-function loadNotes(): Note[] {
+function loadNotes() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return [];
   try {
-    return JSON.parse(raw) as Note[];
+    return JSON.parse(raw);
   } catch {
     return [];
   }
 }
 
-function saveNotes(notes: Note[]): void {
+function saveNotes(notes) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
 }
 
-function $(id: string): HTMLElement {
+function $(id) {
   const el = document.getElementById(id);
   if (!el) {
     throw new Error(`Element #${id} introuvable`);
@@ -31,20 +22,21 @@ function $(id: string): HTMLElement {
   return el;
 }
 
-function renderNotes(): void {
+function renderNotes() {
   const notes = loadNotes();
 
-  const list = $("notesList") as HTMLDivElement;
-  const search = ( $("searchInput") as HTMLInputElement ).value.toLowerCase();
-  const fw = ( $("filterFramework") as HTMLInputElement ).value.toLowerCase();
-  const env = ( $("filterEnv") as HTMLInputElement ).value.toLowerCase();
-  const type = ( $("filterType") as HTMLSelectElement ).value;
+  const list = $("notesList");
+  const search = $("searchInput").value.toLowerCase();
+  const fw = $("filterFramework").value.toLowerCase();
+  const env = $("filterEnv").value.toLowerCase();
+  const type = $("filterType").value;
 
   list.innerHTML = "";
 
   notes
     .filter((n) =>
-      (!search || n.content.toLowerCase().includes(search) ||
+      (!search ||
+        n.content.toLowerCase().includes(search) ||
         (n.framework || "").toLowerCase().includes(search) ||
         (n.env || "").toLowerCase().includes(search)) &&
       (!fw || (n.framework || "").toLowerCase().includes(fw)) &&
@@ -71,17 +63,17 @@ function renderNotes(): void {
     });
 }
 
-function init(): void {
+function init() {
   const today = new Date().toISOString().slice(0, 10);
-  ( $("dateInput") as HTMLInputElement ).value = today;
+  $("dateInput").value = today;
 
   // Enregistrer
-  ($("saveBtn") as HTMLButtonElement).onclick = () => {
-    const date = ( $("dateInput") as HTMLInputElement ).value;
-    const type = ( $("typeInput") as HTMLSelectElement ).value as "note" | "cmd";
-    const framework = ( $("frameworkInput") as HTMLInputElement ).value.trim();
-    const env = ( $("envInput") as HTMLInputElement ).value.trim();
-    const content = ( $("contentInput") as HTMLTextAreaElement ).value.trim();
+  $("saveBtn").onclick = () => {
+    const date = $("dateInput").value;
+    const type = $("typeInput").value === "cmd" ? "cmd" : "note";
+    const framework = $("frameworkInput").value.trim();
+    const env = $("envInput").value.trim();
+    const content = $("contentInput").value.trim();
 
     if (!content) {
       alert("Le contenu est vide.");
@@ -89,7 +81,7 @@ function init(): void {
     }
 
     const notes = loadNotes();
-    const newNote: Note = {
+    const newNote = {
       id: Date.now(),
       date: date || today,
       type,
@@ -100,7 +92,7 @@ function init(): void {
     notes.push(newNote);
     saveNotes(notes);
 
-    ( $("contentInput") as HTMLTextAreaElement ).value = "";
+    $("contentInput").value = "";
     renderNotes();
   };
 
@@ -111,7 +103,7 @@ function init(): void {
   });
 
   // Export JSON
-  ($("exportBtn") as HTMLButtonElement).onclick = () => {
+  $("exportBtn").onclick = () => {
     const notes = loadNotes();
     const blob = new Blob([JSON.stringify(notes, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -123,19 +115,19 @@ function init(): void {
   };
 
   // Import JSON
-  const importFileInput = $("importFile") as HTMLInputElement;
-  ($("importBtn") as HTMLButtonElement).onclick = () => importFileInput.click();
+  const importFileInput = $("importFile");
+  $("importBtn").onclick = () => importFileInput.click();
 
-  importFileInput.onchange = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    const file = target.files?.[0];
+  importFileInput.onchange = (e) => {
+    const target = e.target;
+    const file = target.files && target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = (ev) => {
       try {
-        const text = ev.target?.result as string;
-        const data = JSON.parse(text) as Note[];
+        const text = ev.target && ev.target.result;
+        const data = JSON.parse(text);
         if (!Array.isArray(data)) throw new Error("format");
         saveNotes(data);
         renderNotes();
