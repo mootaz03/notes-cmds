@@ -1,10 +1,340 @@
-{
-  "compilerOptions": {
-    "target": "ES6",
-    "module": "ES6",
-    "strict": true,
-    "outFile": "main.js",
-    "lib": ["DOM", "ES6"]
+[
+  {
+    "id": "mvn-clean-verify",
+    "framework": "Java / Spring Boot",
+    "env": "CLI",
+    "category": "build",
+    "label": "Build complet avec tests",
+    "command": "mvn clean verify",
+    "description": "Explication : nettoie le projet puis compile et exécute tous les tests (unitaires et d'intégration si configurés). Test : lancer dans un projet Maven Spring Boot, vérifier 'BUILD SUCCESS' et l'exécution des tests."
   },
-  "files": ["main.ts"]
-}
+  {
+    "id": "mvn-package-skip-tests",
+    "framework": "Java / Spring Boot",
+    "env": "CLI",
+    "category": "build",
+    "label": "Build jar rapide (sans tests)",
+    "command": "mvn clean package -DskipTests",
+    "description": "Explication : génère un jar exécutable sans exécuter les tests. Test : vérifier la présence du jar dans target/ puis lancer 'java -jar target/mon-app.jar'."
+  },
+  {
+    "id": "spring-boot-run",
+    "framework": "Java / Spring Boot",
+    "env": "CLI",
+    "category": "run",
+    "label": "Lancer l'application Spring Boot",
+    "command": "mvn spring-boot:run",
+    "description": "Explication : compile et démarre l'application Spring Boot directement via Maven. Test : lancer puis ouvrir http://localhost:8080 ou l'endpoint de santé."
+  },
+  {
+    "id": "spring-profile-active",
+    "framework": "Java / Spring Boot",
+    "env": "CLI",
+    "category": "run",
+    "label": "Lancer Spring Boot avec un profil",
+    "command": "mvn spring-boot:run -Dspring-boot.run.profiles=dev",
+    "description": "Explication : démarre l'application avec le profil Spring 'dev' (application-dev.yml). Test : définir une config différente par profil et vérifier la prise en compte."
+  },
+  {
+    "id": "spring-test-class",
+    "framework": "Java / Spring Boot",
+    "env": "CLI",
+    "category": "test",
+    "label": "Lancer une classe de test spécifique",
+    "command": "mvn -Dtest=NomDeMaClasseDeTest test",
+    "description": "Explication : exécute uniquement la classe de test indiquée (JUnit). Test : remplacer NomDeMaClasseDeTest par une vraie classe, vérifier que seule celle-ci est exécutée."
+  },
+  {
+    "id": "spring-actuator-health",
+    "framework": "Java / Spring Boot",
+    "env": "HTTP",
+    "category": "debug",
+    "label": "Vérifier la santé via Actuator",
+    "command": "curl http://localhost:8080/actuator/health",
+    "description": "Explication : interroge l'endpoint de santé Actuator pour vérifier l'état de l'application. Test : activer Actuator, lancer l'app et exécuter la commande."
+  },
+
+  {
+    "id": "angular-serve",
+    "framework": "Angular",
+    "env": "CLI",
+    "category": "run",
+    "label": "Lancer l'application Angular en dev",
+    "command": "ng serve -o",
+    "description": "Explication : compile l'application en mode développement et ouvre le navigateur sur http://localhost:4200. Test : exécuter à la racine du projet Angular, vérifier le rechargement à chaud."
+  },
+  {
+    "id": "angular-build-prod",
+    "framework": "Angular",
+    "env": "CLI",
+    "category": "build",
+    "label": "Build Angular production",
+    "command": "ng build --configuration production",
+    "description": "Explication : génère un build optimisé pour la production dans le dossier dist/. Test : vérifier la taille minifiée des bundles et le contenu de dist/."
+  },
+  {
+    "id": "angular-test-unit",
+    "framework": "Angular",
+    "env": "CLI",
+    "category": "test",
+    "label": "Lancer les tests unitaires Angular",
+    "command": "ng test",
+    "description": "Explication : exécute les tests unitaires (Karma/Jasmine) avec rechargement. Test : lancer la commande, modifier un test, vérifier la mise à jour du résultat."
+  },
+  {
+    "id": "angular-lint",
+    "framework": "Angular",
+    "env": "CLI",
+    "category": "quality",
+    "label": "Lint du code Angular",
+    "command": "ng lint",
+    "description": "Explication : exécute les règles de linting (TSLint/ESLint selon config) sur le projet. Test : introduire volontairement une erreur de style et vérifier qu'elle est signalée."
+  },
+  {
+    "id": "npm-audit-prod",
+    "framework": "Angular",
+    "env": "CLI",
+    "category": "security",
+    "label": "Audit de sécurité des dépendances (prod)",
+    "command": "npm audit --production",
+    "description": "Explication : analyse les dépendances de production à la recherche de vulnérabilités connues. Test : exécuter et consulter les vulnérabilités listées (s'il y en a)."
+  },
+
+  {
+    "id": "docker-build-image",
+    "framework": "Docker",
+    "env": "CLI",
+    "category": "build",
+    "label": "Construire l'image Docker",
+    "command": "docker build -t mon-app:latest .",
+    "description": "Explication : construit une image Docker à partir du Dockerfile courant avec le tag mon-app:latest. Test : exécuter dans le répertoire contenant le Dockerfile, vérifier 'docker images'."
+  },
+  {
+    "id": "docker-run-app",
+    "framework": "Docker",
+    "env": "CLI",
+    "category": "run",
+    "label": "Lancer le container Spring Boot",
+    "command": "docker run --rm -p 8080:8080 mon-app:latest",
+    "description": "Explication : lance un container à partir de l'image mon-app:latest, exposée sur le port local 8080. Test : après build, lancer la commande et tester http://localhost:8080."
+  },
+  {
+    "id": "docker-ps",
+    "framework": "Docker",
+    "env": "CLI",
+    "category": "inspect",
+    "label": "Lister les containers en cours",
+    "command": "docker ps",
+    "description": "Explication : affiche les containers Docker en cours d'exécution. Test : lancer quelques containers et vérifier leur présence dans la liste."
+  },
+  {
+    "id": "docker-logs-follow",
+    "framework": "Docker",
+    "env": "CLI",
+    "category": "debug",
+    "label": "Suivre les logs d'un container",
+    "command": "docker logs -f <container_id>",
+    "description": "Explication : affiche en continu les logs d'un container Docker. Test : remplacer <container_id> par un ID réel, générer du trafic sur l'application et observer les logs."
+  },
+  {
+    "id": "docker-exec-bash",
+    "framework": "Docker",
+    "env": "CLI",
+    "category": "debug",
+    "label": "Entrer dans un container (bash)",
+    "command": "docker exec -it <container_id> /bin/bash",
+    "description": "Explication : ouvre un shell bash dans le container pour inspection. Test : entrer dans un container Linux et vérifier l'accès au système de fichiers interne."
+  },
+  {
+    "id": "docker-system-prune",
+    "framework": "Docker",
+    "env": "CLI",
+    "category": "cleanup",
+    "label": "Nettoyer les ressources inutilisées",
+    "command": "docker system prune -f",
+    "description": "Explication : supprime les containers, réseaux et images non utilisés afin de libérer de l'espace disque. Test : lancer la commande après plusieurs essais, puis exécuter 'docker system df'."
+  },
+
+  {
+    "id": "linux-ls-lah",
+    "framework": "Linux",
+    "env": "CLI",
+    "category": "files",
+    "label": "Lister les fichiers en détail",
+    "command": "ls -lah",
+    "description": "Explication : liste les fichiers avec tailles lisibles, droits et propriétaires. Test : exécuter dans un répertoire avec plusieurs fichiers et vérifier les colonnes affichées."
+  },
+  {
+    "id": "linux-grep-recurse",
+    "framework": "Linux",
+    "env": "CLI",
+    "category": "search",
+    "label": "Recherche récursive dans le code",
+    "command": "grep -R \"motif\" src/",
+    "description": "Explication : recherche le texte 'motif' dans tous les fichiers sous src/. Test : remplacer 'motif' par le nom d'une classe et vérifier les correspondances."
+  },
+  {
+    "id": "linux-tail-f",
+    "framework": "Linux",
+    "env": "CLI",
+    "category": "logs",
+    "label": "Suivre un fichier de log",
+    "command": "tail -f /var/log/syslog",
+    "description": "Explication : affiche en temps réel les nouvelles lignes d'un fichier de log. Test : générer des événements système et vérifier que les lignes apparaissent."
+  },
+  {
+    "id": "linux-find-pom",
+    "framework": "Linux",
+    "env": "CLI",
+    "category": "files",
+    "label": "Trouver tous les pom.xml",
+    "command": "find . -name \"pom.xml\"",
+    "description": "Explication : liste tous les fichiers pom.xml à partir du répertoire courant. Test : exécuter dans un repo multi-modules et vérifier la liste obtenue."
+  },
+  {
+    "id": "linux-ports-open",
+    "framework": "Linux",
+    "env": "CLI",
+    "category": "network",
+    "label": "Lister les ports ouverts",
+    "command": "sudo lsof -i -P -n | grep LISTEN",
+    "description": "Explication : affiche les processus écoutant sur des ports réseau. Test : vérifier que les services (SSH, app Spring Boot, etc.) sont présents."
+  },
+
+  {
+    "id": "git-status-short",
+    "framework": "Git",
+    "env": "CLI",
+    "category": "status",
+    "label": "État succinct du repo",
+    "command": "git status -sb",
+    "description": "Explication : affiche la branche courante et les fichiers modifiés de manière compacte. Test : modifier un fichier, exécuter la commande et vérifier l'affichage."
+  },
+  {
+    "id": "git-log-pretty",
+    "framework": "Git",
+    "env": "CLI",
+    "category": "history",
+    "label": "Historique compact et graphique",
+    "command": "git log --oneline --graph --decorate --all",
+    "description": "Explication : affiche un graphe de l'historique avec un commit par ligne. Test : dans un repo avec plusieurs branches, visualiser la structure."
+  },
+  {
+    "id": "git-stash-wip",
+    "framework": "Git",
+    "env": "CLI",
+    "category": "stash",
+    "label": "Stasher le travail en cours",
+    "command": "git stash push -m \"WIP\"",
+    "description": "Explication : sauvegarde les modifications non committées sans les perdre. Test : modifier des fichiers, stasher, vérifier que 'git status' est clean puis 'git stash pop'."
+  },
+  {
+    "id": "git-rebase-interactive",
+    "framework": "Git",
+    "env": "CLI",
+    "category": "history",
+    "label": "Rebase interactif (3 derniers commits)",
+    "command": "git rebase -i HEAD~3",
+    "description": "Explication : permet de réécrire les 3 derniers commits (squash, reword, etc.). Test : sur un repo perso, lancer la commande et fusionner 2 commits de test."
+  },
+  {
+    "id": "git-cherry-pick",
+    "framework": "Git",
+    "env": "CLI",
+    "category": "history",
+    "label": "Récupérer un commit spécifique",
+    "command": "git cherry-pick <sha>",
+    "description": "Explication : applique un commit spécifique sur la branche courante. Test : noter le SHA d'un commit d'une autre branche, le cherry-pick sur la branche actuelle et vérifier les changements."
+  },
+  {
+    "id": "git-clean-branches-merged",
+    "framework": "Git",
+    "env": "CLI",
+    "category": "cleanup",
+    "label": "Lister les branches locales mergées",
+    "command": "git branch --merged",
+    "description": "Explication : liste les branches locales entièrement fusionnées dans la branche courante. Test : après merge d'une feature, vérifier qu'elle apparaît dans la liste et peut être supprimée."
+  },
+
+  {
+    "id": "sql-select-active-users",
+    "framework": "SQL",
+    "env": "DB",
+    "category": "select",
+    "label": "Sélection des utilisateurs actifs",
+    "command": "SELECT id, name, email FROM users WHERE active = true;",
+    "description": "Explication : récupère les utilisateurs marqués comme actifs. Test : insérer des users avec active = true/false et vérifier le filtrage."
+  },
+  {
+    "id": "sql-join-users-orders",
+    "framework": "SQL",
+    "env": "DB",
+    "category": "join",
+    "label": "Jointure utilisateurs / commandes",
+    "command": "SELECT u.name, o.id AS order_id, o.total\nFROM users u\nJOIN orders o ON o.user_id = u.id;",
+    "description": "Explication : récupère les commandes avec le nom du client. Test : insérer des données dans users et orders, vérifier la cohérence des résultats."
+  },
+  {
+    "id": "sql-group-by-status",
+    "framework": "SQL",
+    "env": "DB",
+    "category": "aggregation",
+    "label": "Nombre de commandes par statut",
+    "command": "SELECT status, COUNT(*) AS count\nFROM orders\nGROUP BY status;",
+    "description": "Explication : compte les commandes pour chaque statut. Test : insérer plusieurs commandes avec différents statuts et vérifier les totaux."
+  },
+  {
+    "id": "sql-last-orders",
+    "framework": "SQL",
+    "env": "DB",
+    "category": "select",
+    "label": "10 dernières commandes",
+    "command": "SELECT * FROM orders ORDER BY created_at DESC LIMIT 10;",
+    "description": "Explication : récupère les 10 commandes les plus récentes. Test : insérer des commandes avec des dates différentes et vérifier l'ordre."
+  },
+  {
+    "id": "sql-window-row-number",
+    "framework": "SQL",
+    "env": "DB",
+    "category": "window",
+    "label": "Numéro de ligne par client (ROW_NUMBER)",
+    "command": "SELECT user_id, id AS order_id, total,\n       ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY created_at DESC) AS rn\nFROM orders;",
+    "description": "Explication : numérote les commandes de chaque client, rn=1 étant la plus récente. Test : pour un user donné, vérifier que rn décroît avec l'ancienneté."
+  },
+  {
+    "id": "sql-window-running-total",
+    "framework": "SQL",
+    "env": "DB",
+    "category": "window",
+    "label": "Somme cumulée par client",
+    "command": "SELECT user_id, created_at, total,\n       SUM(total) OVER (PARTITION BY user_id ORDER BY created_at) AS running_total\nFROM orders;",
+    "description": "Explication : calcule le montant cumulé des commandes par client dans l'ordre chronologique. Test : pour un user, vérifier que running_total est la somme progressive des totaux."
+  },
+  {
+    "id": "sql-cte-last-7-days",
+    "framework": "SQL",
+    "env": "DB",
+    "category": "cte",
+    "label": "Commandes des 7 derniers jours (CTE)",
+    "command": "WITH recent_orders AS (\n  SELECT * FROM orders\n  WHERE created_at >= NOW() - INTERVAL '7 days'\n)\nSELECT user_id, COUNT(*) AS nb_orders\nFROM recent_orders\nGROUP BY user_id;",
+    "description": "Explication : utilise une CTE pour compter les commandes par client sur les 7 derniers jours. Test : insérer des commandes avec des dates variées et vérifier le filtrage temporel."
+  },
+  {
+    "id": "sql-function-user-total",
+    "framework": "SQL",
+    "env": "DB",
+    "category": "function",
+    "label": "Fonction PL/pgSQL - total par utilisateur",
+    "command": "CREATE OR REPLACE FUNCTION get_user_total_orders(p_user_id INT)\nRETURNS NUMERIC AS $$\nDECLARE\n    v_total NUMERIC;\nBEGIN\n    SELECT COALESCE(SUM(total), 0)\n    INTO v_total\n    FROM orders\n    WHERE user_id = p_user_id;\n\n    RETURN v_total;\nEND;\n$$ LANGUAGE plpgsql;",
+    "description": "Explication : fonction PostgreSQL qui retourne la somme des totaux de commandes pour un utilisateur donné. Test : créer la fonction puis exécuter 'SELECT get_user_total_orders(1);' après avoir inséré des commandes pour user_id=1."
+  },
+  {
+    "id": "sql-call-function-user-total",
+    "framework": "SQL",
+    "env": "DB",
+    "category": "function",
+    "label": "Appel de la fonction get_user_total_orders",
+    "command": "SELECT get_user_total_orders(1) AS total_for_user_1;",
+    "description": "Explication : appelle la fonction get_user_total_orders pour l'utilisateur 1. Test : vérifier que le résultat correspond à la somme des totaux dans la table orders."
+  }
+]
