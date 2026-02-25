@@ -1,3 +1,12 @@
+// main.js (module ES)
+import { javaSpringCommands } from "./commands/java_spring.js";
+import { angularCommands } from "./commands/angular.js";
+import { dockerCommands } from "./commands/docker.js";
+import { linuxCommands } from "./commands/linux.js";
+import { windowsCommands } from "./commands/windows.js";
+import { gitCommands } from "./commands/git.js";
+import { sqlCommands } from "./commands/sql.js";
+
 // ====== Utilitaires ======
 function $(id) {
   const el = document.getElementById(id);
@@ -27,8 +36,16 @@ function fallbackCopy(text) {
   document.body.removeChild(textarea);
 }
 
-// ====== Données ======
-let COMMANDS = [];
+// ====== Données : concat de tous les domaines ======
+const COMMANDS = [
+  ...javaSpringCommands,
+  ...angularCommands,
+  ...dockerCommands,
+  ...linuxCommands,
+  ...windowsCommands,
+  ...gitCommands,
+  ...sqlCommands
+];
 
 // ====== Filtres & affichage ======
 function populateFrameworkFilter() {
@@ -89,7 +106,7 @@ function renderCommands() {
 
   if (!filtered.length) {
     list.innerHTML =
-      '<div class="empty-state">Aucune commande pour ces critères. Vérifie aussi que <code>commands.json</code> est bien chargé.</div>';
+      '<div class="empty-state">Aucune commande pour ces critères.</div>';
   } else {
     filtered.forEach((c) => {
       const item = document.createElement("div");
@@ -176,14 +193,12 @@ function renderCommands() {
 }
 
 function initSearch() {
-  // Recherche au clavier
   $("searchInput").addEventListener("input", renderCommands);
   $("frameworkFilter").addEventListener("input", renderCommands);
   document
     .querySelectorAll("input[name='osFilter']")
     .forEach((r) => r.addEventListener("change", renderCommands));
 
-  // Enter dans la zone de recherche
   $("searchInput").addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -191,13 +206,12 @@ function initSearch() {
     }
   });
 
-  // Bouton Rechercher
   $("searchBtn").addEventListener("click", () => {
     renderCommands();
   });
 }
 
-// ====== Générateur JSON ======
+// ====== Générateur JSON (inchangé) ======
 function slugify(str) {
   return str
     .toLowerCase()
@@ -269,36 +283,10 @@ function initGenerator() {
   });
 }
 
-// ====== Chargement initial ======
+// ====== Init global ======
 window.addEventListener("DOMContentLoaded", () => {
-  // Important : cache-buster pour éviter d'anciennes versions
-  fetch("commands.json?ts=" + Date.now(), { cache: "no-store" })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error("HTTP " + res.status);
-      }
-      return res.json();
-    })
-    .then((data) => {
-      if (!Array.isArray(data)) {
-        throw new Error("Format commands.json invalide (doit être un tableau).");
-      }
-      COMMANDS = data;
-      console.log("Commands chargées:", COMMANDS.length);
-      populateFrameworkFilter();
-      initSearch();
-      renderCommands();
-    })
-    .catch((err) => {
-      console.error("Erreur chargement commands.json:", err);
-      alert(
-        "Erreur lors du chargement de commands.json.\n\nVérifie :\n- que commands.json est bien à la racine du repo\n- que le JSON est valide (pas de virgule en trop, pas de commentaires)\n- que tu ouvres la page via HTTP (GitHub Pages, pas file://)"
-      );
-      $("commandsList").innerHTML =
-        '<div class="empty-state">Erreur lors du chargement de <code>commands.json</code> (voir la console F12).</div>';
-      $("commandsCount").textContent = "0 commande";
-      initSearch(); // pour que le bouton search ne casse pas l'app même sans données
-    });
-
+  populateFrameworkFilter();
+  initSearch();
   initGenerator();
+  renderCommands();
 });
