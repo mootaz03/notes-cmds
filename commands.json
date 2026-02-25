@@ -3,338 +3,435 @@
     "id": "mvn-clean-verify",
     "framework": "Java / Spring Boot",
     "env": "CLI",
+    "os": "all",
     "category": "build",
     "label": "Build complet avec tests",
     "command": "mvn clean verify",
-    "description": "Explication : nettoie le projet puis compile et exécute tous les tests (unitaires et d'intégration si configurés). Test : lancer dans un projet Maven Spring Boot, vérifier 'BUILD SUCCESS' et l'exécution des tests."
+    "description": "Nettoie le projet, compile et exécute tous les tests (unitaires + intégration si configurés).",
+    "example": "À la racine d'un projet Maven, exécute la commande et vérifie que le log affiche 'BUILD SUCCESS'."
   },
   {
     "id": "mvn-package-skip-tests",
     "framework": "Java / Spring Boot",
     "env": "CLI",
+    "os": "all",
     "category": "build",
     "label": "Build jar rapide (sans tests)",
     "command": "mvn clean package -DskipTests",
-    "description": "Explication : génère un jar exécutable sans exécuter les tests. Test : vérifier la présence du jar dans target/ puis lancer 'java -jar target/mon-app.jar'."
+    "description": "Génère un jar exécutable sans lancer les tests pour accélérer le build.",
+    "example": "Après la commande, vérifie la présence du jar dans target/ et lance-le avec 'java -jar target/mon-app.jar'."
   },
   {
     "id": "spring-boot-run",
     "framework": "Java / Spring Boot",
     "env": "CLI",
+    "os": "all",
     "category": "run",
-    "label": "Lancer l'application Spring Boot",
+    "label": "Lancer l'application Spring Boot (dev)",
     "command": "mvn spring-boot:run",
-    "description": "Explication : compile et démarre l'application Spring Boot directement via Maven. Test : lancer puis ouvrir http://localhost:8080 ou l'endpoint de santé."
+    "description": "Compile et lance l'application Spring Boot en mode développement.",
+    "example": "Exécute la commande puis vérifie http://localhost:8080 ou l'endpoint Actuator /actuator/health."
   },
   {
-    "id": "spring-profile-active",
+    "id": "spring-boot-run-profile-dev",
     "framework": "Java / Spring Boot",
     "env": "CLI",
+    "os": "all",
     "category": "run",
-    "label": "Lancer Spring Boot avec un profil",
+    "label": "Lancer Spring Boot avec profil dev",
     "command": "mvn spring-boot:run -Dspring-boot.run.profiles=dev",
-    "description": "Explication : démarre l'application avec le profil Spring 'dev' (application-dev.yml). Test : définir une config différente par profil et vérifier la prise en compte."
+    "description": "Démarre l'application avec le profil Spring 'dev' (application-dev.yml / properties).",
+    "example": "Définis un message spécifique dans application-dev.yml puis vérifie que l'endpoint le renvoie."
   },
   {
     "id": "spring-test-class",
     "framework": "Java / Spring Boot",
     "env": "CLI",
+    "os": "all",
     "category": "test",
     "label": "Lancer une classe de test spécifique",
     "command": "mvn -Dtest=NomDeMaClasseDeTest test",
-    "description": "Explication : exécute uniquement la classe de test indiquée (JUnit). Test : remplacer NomDeMaClasseDeTest par une vraie classe, vérifier que seule celle-ci est exécutée."
+    "description": "Exécute uniquement la classe de test JUnit indiquée.",
+    "example": "Remplace NomDeMaClasseDeTest par une vraie classe, lance la commande et vérifie que seul ce test apparaît dans le rapport."
   },
   {
-    "id": "spring-actuator-health",
+    "id": "spring-mvn-dependency-tree",
     "framework": "Java / Spring Boot",
-    "env": "HTTP",
+    "env": "CLI",
+    "os": "all",
     "category": "debug",
-    "label": "Vérifier la santé via Actuator",
-    "command": "curl http://localhost:8080/actuator/health",
-    "description": "Explication : interroge l'endpoint de santé Actuator pour vérifier l'état de l'application. Test : activer Actuator, lancer l'app et exécuter la commande."
+    "label": "Afficher l'arbre des dépendances Maven",
+    "command": "mvn dependency:tree",
+    "description": "Affiche l'arbre des dépendances pour analyser les conflits de versions.",
+    "example": "Lance la commande en cas de conflit de version (NoSuchMethodError), repère les dépendances en double dans l'arbre."
   },
 
   {
-    "id": "angular-serve",
+    "id": "angular-ng-serve",
     "framework": "Angular",
     "env": "CLI",
+    "os": "all",
     "category": "run",
     "label": "Lancer l'application Angular en dev",
     "command": "ng serve -o",
-    "description": "Explication : compile l'application en mode développement et ouvre le navigateur sur http://localhost:4200. Test : exécuter à la racine du projet Angular, vérifier le rechargement à chaud."
+    "description": "Compile l'application Angular en mode développement et ouvre le navigateur sur http://localhost:4200.",
+    "example": "À la racine du projet Angular, exécute la commande et vérifie le rechargement automatique après modification d'un composant."
   },
   {
-    "id": "angular-build-prod",
+    "id": "angular-ng-build-prod",
     "framework": "Angular",
     "env": "CLI",
+    "os": "all",
     "category": "build",
     "label": "Build Angular production",
     "command": "ng build --configuration production",
-    "description": "Explication : génère un build optimisé pour la production dans le dossier dist/. Test : vérifier la taille minifiée des bundles et le contenu de dist/."
+    "description": "Génère un build optimisé pour la production dans le dossier dist/.",
+    "example": "Après la commande, inspecte dist/ et vérifie la taille minifiée des bundles."
   },
   {
-    "id": "angular-test-unit",
+    "id": "angular-ng-test",
     "framework": "Angular",
     "env": "CLI",
+    "os": "all",
     "category": "test",
     "label": "Lancer les tests unitaires Angular",
     "command": "ng test",
-    "description": "Explication : exécute les tests unitaires (Karma/Jasmine) avec rechargement. Test : lancer la commande, modifier un test, vérifier la mise à jour du résultat."
+    "description": "Exécute les tests unitaires configurés (Karma/Jasmine).",
+    "example": "Lance la commande, modifie un test pour le faire échouer, vérifie que le runner signale l'erreur."
   },
   {
-    "id": "angular-lint",
+    "id": "angular-ng-lint",
     "framework": "Angular",
     "env": "CLI",
+    "os": "all",
     "category": "quality",
     "label": "Lint du code Angular",
     "command": "ng lint",
-    "description": "Explication : exécute les règles de linting (TSLint/ESLint selon config) sur le projet. Test : introduire volontairement une erreur de style et vérifier qu'elle est signalée."
+    "description": "Analyse le code Angular selon les règles de lint (ESLint/TSLint selon configuration).",
+    "example": "Introduis volontairement un import non utilisé dans un composant et vérifie que ng lint le signale."
   },
   {
     "id": "npm-audit-prod",
     "framework": "Angular",
     "env": "CLI",
+    "os": "all",
     "category": "security",
     "label": "Audit de sécurité des dépendances (prod)",
     "command": "npm audit --production",
-    "description": "Explication : analyse les dépendances de production à la recherche de vulnérabilités connues. Test : exécuter et consulter les vulnérabilités listées (s'il y en a)."
+    "description": "Analyse les dépendances de production à la recherche de vulnérabilités connues.",
+    "example": "Exécute la commande, identifie une vulnérabilité puis teste sa correction après mise à jour d'une dépendance."
   },
 
   {
     "id": "docker-build-image",
     "framework": "Docker",
     "env": "CLI",
+    "os": "all",
     "category": "build",
-    "label": "Construire l'image Docker",
+    "label": "Construire l'image Docker de l'application",
     "command": "docker build -t mon-app:latest .",
-    "description": "Explication : construit une image Docker à partir du Dockerfile courant avec le tag mon-app:latest. Test : exécuter dans le répertoire contenant le Dockerfile, vérifier 'docker images'."
+    "description": "Construit une image Docker à partir du Dockerfile courant avec le tag mon-app:latest.",
+    "example": "Place-toi dans le dossier contenant le Dockerfile, exécute la commande puis vérifie 'docker images | grep mon-app'."
   },
   {
     "id": "docker-run-app",
     "framework": "Docker",
     "env": "CLI",
+    "os": "all",
     "category": "run",
     "label": "Lancer le container Spring Boot",
     "command": "docker run --rm -p 8080:8080 mon-app:latest",
-    "description": "Explication : lance un container à partir de l'image mon-app:latest, exposée sur le port local 8080. Test : après build, lancer la commande et tester http://localhost:8080."
+    "description": "Lance l'image mon-app:latest en exposant le port 8080 sur la machine hôte.",
+    "example": "Après avoir construit l'image, lance la commande puis teste http://localhost:8080 pour vérifier que l'app répond."
   },
   {
     "id": "docker-ps",
     "framework": "Docker",
     "env": "CLI",
+    "os": "all",
     "category": "inspect",
     "label": "Lister les containers en cours",
     "command": "docker ps",
-    "description": "Explication : affiche les containers Docker en cours d'exécution. Test : lancer quelques containers et vérifier leur présence dans la liste."
+    "description": "Affiche les containers Docker actuellement en cours d'exécution.",
+    "example": "Lance plusieurs containers, exécute 'docker ps' et vérifie qu'ils apparaissent avec leur statut."
   },
   {
     "id": "docker-logs-follow",
     "framework": "Docker",
     "env": "CLI",
-    "category": "debug",
+    "os": "all",
+    "category": "logs",
     "label": "Suivre les logs d'un container",
     "command": "docker logs -f <container_id>",
-    "description": "Explication : affiche en continu les logs d'un container Docker. Test : remplacer <container_id> par un ID réel, générer du trafic sur l'application et observer les logs."
+    "description": "Affiche en continu les logs du container indiqué.",
+    "example": "Remplace <container_id> par l'ID réel, génère du trafic sur l'application et observe les logs en direct."
   },
   {
     "id": "docker-exec-bash",
     "framework": "Docker",
     "env": "CLI",
+    "os": "all",
     "category": "debug",
     "label": "Entrer dans un container (bash)",
     "command": "docker exec -it <container_id> /bin/bash",
-    "description": "Explication : ouvre un shell bash dans le container pour inspection. Test : entrer dans un container Linux et vérifier l'accès au système de fichiers interne."
+    "description": "Ouvre un shell bash dans le container pour inspecter le système de fichiers et les process.",
+    "example": "Sur un container Linux, exécute la commande et vérifie l'accès à /app, /etc, etc."
   },
   {
     "id": "docker-system-prune",
     "framework": "Docker",
     "env": "CLI",
+    "os": "all",
     "category": "cleanup",
-    "label": "Nettoyer les ressources inutilisées",
+    "label": "Nettoyer les ressources Docker inutilisées",
     "command": "docker system prune -f",
-    "description": "Explication : supprime les containers, réseaux et images non utilisés afin de libérer de l'espace disque. Test : lancer la commande après plusieurs essais, puis exécuter 'docker system df'."
+    "description": "Supprime les containers arrêtés, les images dangling et les réseaux inutilisés.",
+    "example": "Après plusieurs tests Docker, exécute la commande puis 'docker system df' pour constater la place libérée."
   },
 
   {
     "id": "linux-ls-lah",
     "framework": "Linux",
     "env": "CLI",
+    "os": "linux",
     "category": "files",
-    "label": "Lister les fichiers en détail",
+    "label": "Lister les fichiers (détails + tailles lisibles)",
     "command": "ls -lah",
-    "description": "Explication : liste les fichiers avec tailles lisibles, droits et propriétaires. Test : exécuter dans un répertoire avec plusieurs fichiers et vérifier les colonnes affichées."
+    "description": "Affiche la liste des fichiers avec droits, propriétaire et tailles lisibles (K, M...).",
+    "example": "Exécute dans un répertoire contenant des fichiers de tailles variées pour vérifier les colonnes affichées."
   },
   {
     "id": "linux-grep-recurse",
     "framework": "Linux",
     "env": "CLI",
+    "os": "linux",
     "category": "search",
     "label": "Recherche récursive dans le code",
     "command": "grep -R \"motif\" src/",
-    "description": "Explication : recherche le texte 'motif' dans tous les fichiers sous src/. Test : remplacer 'motif' par le nom d'une classe et vérifier les correspondances."
+    "description": "Recherche le texte 'motif' dans tous les fichiers sous le dossier src/.",
+    "example": "Remplace 'motif' par le nom d'une classe ou d'une méthode et vérifie les fichiers listés."
   },
   {
     "id": "linux-tail-f",
     "framework": "Linux",
     "env": "CLI",
+    "os": "linux",
     "category": "logs",
-    "label": "Suivre un fichier de log",
+    "label": "Suivre un fichier de log en temps réel",
     "command": "tail -f /var/log/syslog",
-    "description": "Explication : affiche en temps réel les nouvelles lignes d'un fichier de log. Test : générer des événements système et vérifier que les lignes apparaissent."
+    "description": "Affiche en continu les nouvelles lignes ajoutées au fichier de log.",
+    "example": "Dans une VM Linux, exécute la commande puis génère de l'activité réseau (ping) et observe les nouvelles entrées."
   },
   {
-    "id": "linux-find-pom",
+    "id": "linux-systemctl-status",
     "framework": "Linux",
     "env": "CLI",
+    "os": "linux",
+    "category": "services",
+    "label": "Vérifier l'état d'un service systemd",
+    "command": "sudo systemctl status nom-du-service",
+    "description": "Affiche l'état détaillé d'un service géré par systemd.",
+    "example": "Exécute par exemple 'sudo systemctl status ssh' pour vérifier si le service SSH est actif."
+  },
+  {
+    "id": "linux-df-h",
+    "framework": "Linux",
+    "env": "CLI",
+    "os": "linux",
+    "category": "monitoring",
+    "label": "Vérifier l'espace disque",
+    "command": "df -h",
+    "description": "Affiche l'utilisation des systèmes de fichiers avec des tailles lisibles.",
+    "example": "Exécute la commande et repère les partitions proches de 100% d'utilisation."
+  },
+
+  {
+    "id": "windows-dir",
+    "framework": "Windows",
+    "env": "CLI",
+    "os": "windows",
     "category": "files",
-    "label": "Trouver tous les pom.xml",
-    "command": "find . -name \"pom.xml\"",
-    "description": "Explication : liste tous les fichiers pom.xml à partir du répertoire courant. Test : exécuter dans un repo multi-modules et vérifier la liste obtenue."
+    "label": "Lister les fichiers (cmd.exe)",
+    "command": "dir",
+    "description": "Affiche la liste des fichiers et dossiers dans le répertoire courant (cmd.exe).",
+    "example": "Ouvre une invite de commande dans un dossier donné et tape 'dir' pour voir le contenu."
   },
   {
-    "id": "linux-ports-open",
-    "framework": "Linux",
+    "id": "windows-powershell-get-childitem",
+    "framework": "Windows",
     "env": "CLI",
+    "os": "windows",
+    "category": "files",
+    "label": "Lister les fichiers (PowerShell)",
+    "command": "Get-ChildItem",
+    "description": "Équivalent de 'dir' en PowerShell, avec plus d'options et de filtrage.",
+    "example": "Dans PowerShell, exécute 'Get-ChildItem -Recurse -Filter *.log' pour lister tous les logs sous le dossier courant."
+  },
+  {
+    "id": "windows-tasklist",
+    "framework": "Windows",
+    "env": "CLI",
+    "os": "windows",
+    "category": "process",
+    "label": "Lister les processus en cours",
+    "command": "tasklist",
+    "description": "Affiche la liste des processus en cours d'exécution sous Windows.",
+    "example": "Ouvre cmd.exe et exécute 'tasklist', repère ton IDE (IntelliJ, VSCode...) dans la liste."
+  },
+  {
+    "id": "windows-netstat-ano",
+    "framework": "Windows",
+    "env": "CLI",
+    "os": "windows",
     "category": "network",
-    "label": "Lister les ports ouverts",
-    "command": "sudo lsof -i -P -n | grep LISTEN",
-    "description": "Explication : affiche les processus écoutant sur des ports réseau. Test : vérifier que les services (SSH, app Spring Boot, etc.) sont présents."
+    "label": "Lister les ports ouverts (netstat)",
+    "command": "netstat -ano",
+    "description": "Affiche les connexions réseau et ports à l'écoute avec l'ID de processus.",
+    "example": "Exécute la commande puis utilise 'findstr 8080' pour localiser le process écoutant sur le port 8080."
+  },
+  {
+    "id": "windows-findstr",
+    "framework": "Windows",
+    "env": "CLI",
+    "os": "windows",
+    "category": "search",
+    "label": "Recherche de texte dans des fichiers (findstr)",
+    "command": "findstr /S /I \"motif\" *.java",
+    "description": "Recherche récursive de 'motif' dans tous les fichiers .java (insensible à la casse).",
+    "example": "Dans un repo Java, exécute la commande en remplaçant 'motif' par le nom d'une méthode."
   },
 
   {
     "id": "git-status-short",
     "framework": "Git",
     "env": "CLI",
+    "os": "all",
     "category": "status",
     "label": "État succinct du repo",
     "command": "git status -sb",
-    "description": "Explication : affiche la branche courante et les fichiers modifiés de manière compacte. Test : modifier un fichier, exécuter la commande et vérifier l'affichage."
+    "description": "Affiche la branche courante et les fichiers modifiés de manière compacte.",
+    "example": "Modifie un fichier, exécute la commande et vérifie les marqueurs (M pour modifié, ?? pour non tracké)."
   },
   {
     "id": "git-log-pretty",
     "framework": "Git",
     "env": "CLI",
+    "os": "all",
     "category": "history",
-    "label": "Historique compact et graphique",
+    "label": "Historique compact avec graphe",
     "command": "git log --oneline --graph --decorate --all",
-    "description": "Explication : affiche un graphe de l'historique avec un commit par ligne. Test : dans un repo avec plusieurs branches, visualiser la structure."
+    "description": "Affiche l'historique des commits sous forme compacte avec un graphe ASCII.",
+    "example": "Dans un repo avec plusieurs branches, observe la topologie des merges et des branches."
   },
   {
     "id": "git-stash-wip",
     "framework": "Git",
     "env": "CLI",
+    "os": "all",
     "category": "stash",
-    "label": "Stasher le travail en cours",
+    "label": "Stasher le travail en cours (WIP)",
     "command": "git stash push -m \"WIP\"",
-    "description": "Explication : sauvegarde les modifications non committées sans les perdre. Test : modifier des fichiers, stasher, vérifier que 'git status' est clean puis 'git stash pop'."
+    "description": "Sauvegarde les modifications non committées dans un stash nommé WIP.",
+    "example": "Modifie plusieurs fichiers, exécute la commande, vérifie 'git status' puis restaure avec 'git stash pop'."
   },
   {
     "id": "git-rebase-interactive",
     "framework": "Git",
     "env": "CLI",
+    "os": "all",
     "category": "history",
-    "label": "Rebase interactif (3 derniers commits)",
+    "label": "Rebase interactif sur les 3 derniers commits",
     "command": "git rebase -i HEAD~3",
-    "description": "Explication : permet de réécrire les 3 derniers commits (squash, reword, etc.). Test : sur un repo perso, lancer la commande et fusionner 2 commits de test."
+    "description": "Permet de réécrire les 3 derniers commits (squash, reword, drop...).",
+    "example": "Sur une branche perso, lance la commande et fusionne 2 commits de cleanup en un seul commit propre."
   },
   {
     "id": "git-cherry-pick",
     "framework": "Git",
     "env": "CLI",
+    "os": "all",
     "category": "history",
-    "label": "Récupérer un commit spécifique",
+    "label": "Appliquer un commit spécifique (cherry-pick)",
     "command": "git cherry-pick <sha>",
-    "description": "Explication : applique un commit spécifique sur la branche courante. Test : noter le SHA d'un commit d'une autre branche, le cherry-pick sur la branche actuelle et vérifier les changements."
-  },
-  {
-    "id": "git-clean-branches-merged",
-    "framework": "Git",
-    "env": "CLI",
-    "category": "cleanup",
-    "label": "Lister les branches locales mergées",
-    "command": "git branch --merged",
-    "description": "Explication : liste les branches locales entièrement fusionnées dans la branche courante. Test : après merge d'une feature, vérifier qu'elle apparaît dans la liste et peut être supprimée."
+    "description": "Applique le commit identifié par <sha> sur la branche courante.",
+    "example": "Récupère un bugfix d'une autre branche en cherry-pickant le commit correspondant."
   },
 
   {
     "id": "sql-select-active-users",
     "framework": "SQL",
     "env": "DB",
+    "os": "all",
     "category": "select",
     "label": "Sélection des utilisateurs actifs",
     "command": "SELECT id, name, email FROM users WHERE active = true;",
-    "description": "Explication : récupère les utilisateurs marqués comme actifs. Test : insérer des users avec active = true/false et vérifier le filtrage."
+    "description": "Exemple simple de sélection avec filtre boolean.",
+    "example": "Insère des users avec active = true/false puis exécute la requête pour vérifier le filtrage."
   },
   {
     "id": "sql-join-users-orders",
     "framework": "SQL",
     "env": "DB",
+    "os": "all",
     "category": "join",
     "label": "Jointure utilisateurs / commandes",
     "command": "SELECT u.name, o.id AS order_id, o.total\nFROM users u\nJOIN orders o ON o.user_id = u.id;",
-    "description": "Explication : récupère les commandes avec le nom du client. Test : insérer des données dans users et orders, vérifier la cohérence des résultats."
+    "description": "Jointure simple entre les tables users et orders pour récupérer le client et le montant de chaque commande.",
+    "example": "Crée quelques users et orders liés, exécute la requête et vérifie que chaque ligne contient bien un nom utilisateur + une commande."
   },
   {
     "id": "sql-group-by-status",
     "framework": "SQL",
     "env": "DB",
+    "os": "all",
     "category": "aggregation",
     "label": "Nombre de commandes par statut",
     "command": "SELECT status, COUNT(*) AS count\nFROM orders\nGROUP BY status;",
-    "description": "Explication : compte les commandes pour chaque statut. Test : insérer plusieurs commandes avec différents statuts et vérifier les totaux."
-  },
-  {
-    "id": "sql-last-orders",
-    "framework": "SQL",
-    "env": "DB",
-    "category": "select",
-    "label": "10 dernières commandes",
-    "command": "SELECT * FROM orders ORDER BY created_at DESC LIMIT 10;",
-    "description": "Explication : récupère les 10 commandes les plus récentes. Test : insérer des commandes avec des dates différentes et vérifier l'ordre."
+    "description": "Exemple d'agrégation avec GROUP BY sur le statut.",
+    "example": "Insère des commandes avec statuts 'NEW', 'PAID', 'CANCELLED' et vérifie les totaux."
   },
   {
     "id": "sql-window-row-number",
     "framework": "SQL",
     "env": "DB",
+    "os": "all",
     "category": "window",
     "label": "Numéro de ligne par client (ROW_NUMBER)",
     "command": "SELECT user_id, id AS order_id, total,\n       ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY created_at DESC) AS rn\nFROM orders;",
-    "description": "Explication : numérote les commandes de chaque client, rn=1 étant la plus récente. Test : pour un user donné, vérifier que rn décroît avec l'ancienneté."
-  },
-  {
-    "id": "sql-window-running-total",
-    "framework": "SQL",
-    "env": "DB",
-    "category": "window",
-    "label": "Somme cumulée par client",
-    "command": "SELECT user_id, created_at, total,\n       SUM(total) OVER (PARTITION BY user_id ORDER BY created_at) AS running_total\nFROM orders;",
-    "description": "Explication : calcule le montant cumulé des commandes par client dans l'ordre chronologique. Test : pour un user, vérifier que running_total est la somme progressive des totaux."
+    "description": "Utilise ROW_NUMBER pour numéroter les commandes par client, rn = 1 étant la plus récente.",
+    "example": "Pour un user donné, vérifie que rn=1 correspond à la commande la plus récente puis rn=2 la seconde, etc."
   },
   {
     "id": "sql-cte-last-7-days",
     "framework": "SQL",
     "env": "DB",
+    "os": "all",
     "category": "cte",
     "label": "Commandes des 7 derniers jours (CTE)",
     "command": "WITH recent_orders AS (\n  SELECT * FROM orders\n  WHERE created_at >= NOW() - INTERVAL '7 days'\n)\nSELECT user_id, COUNT(*) AS nb_orders\nFROM recent_orders\nGROUP BY user_id;",
-    "description": "Explication : utilise une CTE pour compter les commandes par client sur les 7 derniers jours. Test : insérer des commandes avec des dates variées et vérifier le filtrage temporel."
+    "description": "Exemple de CTE pour isoler les commandes récentes puis agréger par client.",
+    "example": "Insère des commandes avec des dates anciennes et récentes, vérifie que seules les 7 derniers jours sont comptés."
   },
   {
     "id": "sql-function-user-total",
     "framework": "SQL",
     "env": "DB",
+    "os": "all",
     "category": "function",
-    "label": "Fonction PL/pgSQL - total par utilisateur",
+    "label": "Fonction PostgreSQL – total par utilisateur",
     "command": "CREATE OR REPLACE FUNCTION get_user_total_orders(p_user_id INT)\nRETURNS NUMERIC AS $$\nDECLARE\n    v_total NUMERIC;\nBEGIN\n    SELECT COALESCE(SUM(total), 0)\n    INTO v_total\n    FROM orders\n    WHERE user_id = p_user_id;\n\n    RETURN v_total;\nEND;\n$$ LANGUAGE plpgsql;",
-    "description": "Explication : fonction PostgreSQL qui retourne la somme des totaux de commandes pour un utilisateur donné. Test : créer la fonction puis exécuter 'SELECT get_user_total_orders(1);' après avoir inséré des commandes pour user_id=1."
+    "description": "Fonction PL/pgSQL qui retourne la somme des commandes pour un utilisateur donné.",
+    "example": "Crée la fonction puis exécute 'SELECT get_user_total_orders(1);' après avoir inséré des commandes pour user_id=1."
   },
   {
     "id": "sql-call-function-user-total",
     "framework": "SQL",
     "env": "DB",
+    "os": "all",
     "category": "function",
     "label": "Appel de la fonction get_user_total_orders",
     "command": "SELECT get_user_total_orders(1) AS total_for_user_1;",
-    "description": "Explication : appelle la fonction get_user_total_orders pour l'utilisateur 1. Test : vérifier que le résultat correspond à la somme des totaux dans la table orders."
+    "description": "Exemple d'appel de la fonction précédente.",
+    "example": "Vérifie que le résultat correspond bien à la somme des totaux de la table orders pour l'utilisateur 1."
   }
 ]
